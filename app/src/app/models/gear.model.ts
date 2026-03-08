@@ -1,4 +1,5 @@
-export type GearType = 'home' | 'arena' | 'hybrid';
+export type GearMarketSegment = 'retail' | 'commercial' | 'military' | 'prosumer';
+export type GearPlayContext = 'home' | 'arena' | 'hybrid';
 
 export interface GearManual {
   title: string;
@@ -11,7 +12,8 @@ export interface GearItem {
   name: string;
   family: string;
   manufacturer: string;
-  type: GearType;
+  marketSegment: GearMarketSegment;
+  playContext: GearPlayContext;
   eraStart: number;
   eraEnd?: number;
   compatibility: string[];

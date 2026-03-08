@@ -14,7 +14,7 @@
     </button>
   </div>
 
-  <div class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+  <div class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-5">
     <label class="text-base font-semibold text-ops-ink">
       Search
       <input
@@ -48,12 +48,22 @@
     </label>
 
     <label class="text-base font-semibold text-ops-ink">
-      Type
+      Segment
       <select
-        [(ngModel)]="selectedType"
+        [(ngModel)]="selectedMarketSegment"
         class="mt-1 w-full rounded-md border border-ops-grid bg-white px-3 py-2 text-base font-medium outline-none ring-ops-laser/40 transition focus:ring"
       >
-        <option *ngFor="let type of typeOptions" [value]="type">{{ type | titlecase }}</option>
+        <option *ngFor="let segment of marketSegmentOptions" [value]="segment">{{ segment | titlecase }}</option>
+      </select>
+    </label>
+
+    <label class="text-base font-semibold text-ops-ink">
+      Context
+      <select
+        [(ngModel)]="selectedPlayContext"
+        class="mt-1 w-full rounded-md border border-ops-grid bg-white px-3 py-2 text-base font-medium outline-none ring-ops-laser/40 transition focus:ring"
+      >
+        <option *ngFor="let context of playContextOptions" [value]="context">{{ context | titlecase }}</option>
       </select>
     </label>
   </div>
@@ -79,7 +89,10 @@
           <h2 class="font-display text-2xl text-ops-ink">{{ item.name }}</h2>
           <p class="text-base font-semibold uppercase tracking-[0.12em] text-ops-moss">{{ item.manufacturer }}</p>
         </div>
-        <span class="rounded-full bg-ops-ink px-3 py-1 text-sm font-bold uppercase tracking-[0.08em] text-ops-paper">{{ item.type }}</span>
+        <div class="flex flex-col items-end gap-1">
+          <span class="rounded-full bg-ops-ink px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-ops-paper">{{ item.marketSegment }}</span>
+          <span class="rounded-full border border-ops-grid bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-ops-ink">{{ item.playContext }}</span>
+        </div>
       </div>
 
       <p class="mt-3 text-lg text-ops-ink/85">{{ item.description }}</p>

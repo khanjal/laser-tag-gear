@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { GearRepository } from '../../data-access/gear.repository';
-import { GearItem, GearType } from '../../models/gear.model';
+import { GearItem, GearMarketSegment, GearPlayContext } from '../../models/gear.model';
 
 @Component({
   selector: 'app-catalog',
@@ -17,9 +17,11 @@ export class CatalogComponent {
   searchTerm = '';
   selectedManufacturer = 'all';
   selectedFamily = 'all';
-  selectedType = 'all';
+  selectedMarketSegment = 'all';
+  selectedPlayContext = 'all';
 
-  readonly typeOptions: Array<GearType | 'all'> = ['all', 'home', 'arena', 'hybrid'];
+  readonly marketSegmentOptions: Array<GearMarketSegment | 'all'> = ['all', 'retail', 'commercial', 'military', 'prosumer'];
+  readonly playContextOptions: Array<GearPlayContext | 'all'> = ['all', 'home', 'arena', 'hybrid'];
   readonly allItems = this.repository.getAll();
   readonly manufacturers = this.repository.getManufacturers();
   readonly families = this.repository.getFamilies();
@@ -30,7 +32,8 @@ export class CatalogComponent {
     return this.allItems.filter((item) => {
       const matchesManufacturer = this.selectedManufacturer === 'all' || item.manufacturer === this.selectedManufacturer;
       const matchesFamily = this.selectedFamily === 'all' || item.family === this.selectedFamily;
-      const matchesType = this.selectedType === 'all' || item.type === this.selectedType;
+      const matchesMarketSegment = this.selectedMarketSegment === 'all' || item.marketSegment === this.selectedMarketSegment;
+      const matchesPlayContext = this.selectedPlayContext === 'all' || item.playContext === this.selectedPlayContext;
       const matchesQuery =
         query.length === 0 ||
         item.name.toLowerCase().includes(query) ||
@@ -39,7 +42,7 @@ export class CatalogComponent {
         item.tags.some((tag) => tag.toLowerCase().includes(query)) ||
         item.compatibility.some((group) => group.toLowerCase().includes(query));
 
-      return matchesManufacturer && matchesFamily && matchesType && matchesQuery;
+      return matchesManufacturer && matchesFamily && matchesMarketSegment && matchesPlayContext && matchesQuery;
     });
   }
 
@@ -47,6 +50,7 @@ export class CatalogComponent {
     this.searchTerm = '';
     this.selectedManufacturer = 'all';
     this.selectedFamily = 'all';
-    this.selectedType = 'all';
+    this.selectedMarketSegment = 'all';
+    this.selectedPlayContext = 'all';
   }
 }

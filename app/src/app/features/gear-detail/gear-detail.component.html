@@ -9,7 +9,8 @@
     <article class="rounded-lg border border-ops-grid bg-white/70 p-4">
       <h2 class="font-display text-lg text-ops-ink">Classification</h2>
       <p class="mt-2 text-base"><strong>Family:</strong> {{ gear.family }}</p>
-      <p class="text-base"><strong>Type:</strong> {{ gear.type | titlecase }}</p>
+      <p class="text-base"><strong>Segment:</strong> {{ gear.marketSegment | titlecase }}</p>
+      <p class="text-base"><strong>Context:</strong> {{ gear.playContext | titlecase }}</p>
       <p class="text-base">
         <strong>Era:</strong> {{ gear.eraStart }}<span *ngIf="gear.eraEnd"> - {{ gear.eraEnd }}</span><span *ngIf="!gear.eraEnd">+</span>
       </p>
@@ -65,7 +66,7 @@
     >
       <h3 class="font-display text-xl text-ops-ink">{{ item.name }}</h3>
       <p class="text-sm font-bold uppercase tracking-[0.12em] text-ops-moss">{{ item.manufacturer }}</p>
-      <p class="mt-2 text-base text-ops-ink/80">{{ item.family }} · {{ item.type | titlecase }}</p>
+      <p class="mt-2 text-base text-ops-ink/80">{{ item.family }} · {{ item.marketSegment | titlecase }} · {{ item.playContext | titlecase }}</p>
     </a>
   </div>
 </section>
