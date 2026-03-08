@@ -74,6 +74,47 @@ export class GearDetailComponent {
     return urls.map((url) => ({ name: this.fileNameFromUrl(url), url }));
   }
 
+  get linkedDescriptionParts(): Array<{ text: string; href?: string }> {
+    const text = this.gear?.description ?? '';
+    if (!text) {
+      return [];
+    }
+
+    const files = this.legacyFiles;
+    if (files.length === 0) {
+      return [{ text }];
+    }
+
+    const map = new Map(files.map((f) => [f.name.toLowerCase(), f.url]));
+    const escapedNames = files
+      .map((f) => f.name)
+      .sort((a, b) => b.length - a.length)
+      .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+    const regex = new RegExp(`(${escapedNames.join('|')})`, 'gi');
+    const parts: Array<{ text: string; href?: string }> = [];
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(text)) !== null) {
+      const index = match.index;
+      if (index > lastIndex) {
+        parts.push({ text: text.slice(lastIndex, index) });
+      }
+
+      const token = match[0];
+      const href = map.get(token.toLowerCase());
+      parts.push(href ? { text: token, href } : { text: token });
+      lastIndex = index + token.length;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push({ text: text.slice(lastIndex) });
+    }
+
+    return parts;
+  }
+
   private toAssetUrls(extensions: string[]): string[] {
     const links = this.gear?.legacy?.assetLinks ?? [];
     const result: string[] = [];

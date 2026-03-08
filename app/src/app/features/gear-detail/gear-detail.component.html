@@ -3,7 +3,19 @@
   <h1 class="mt-1 font-display text-3xl text-ops-ink sm:text-4xl">{{ gear.name }}</h1>
   <p class="mt-2 text-lg font-semibold uppercase tracking-[0.14em] text-ops-moss">{{ gear.manufacturer }}</p>
 
-  <p class="mt-5 max-w-3xl text-xl leading-relaxed text-ops-ink/85">{{ gear.description }}</p>
+  <p class="mt-5 max-w-3xl text-xl leading-relaxed text-ops-ink/85">
+    <ng-container *ngFor="let part of linkedDescriptionParts">
+      <a
+        *ngIf="part.href; else plainText"
+        [href]="part.href"
+        target="_blank"
+        rel="noreferrer"
+        class="font-semibold text-ops-ember underline decoration-dotted underline-offset-4"
+        >{{ part.text }}</a
+      >
+      <ng-template #plainText>{{ part.text }}</ng-template>
+    </ng-container>
+  </p>
 
   <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <article class="rounded-lg border border-ops-grid bg-white/70 p-4">
