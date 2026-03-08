@@ -47,7 +47,7 @@ Build a modern Angular-based catalog for mostly commercial laser tag gear, optim
 - [x] Create GitHub repository and push initial code.
 - [x] Rename app folder to `app/`.
 - [x] Configure Tailwind styling.
-- [ ] Add baseline UI shell (home, catalog, gear detail routes).
+- [x] Add baseline UI shell (home, catalog, gear detail routes).
 - [ ] Define environment configuration strategy.
 
 ## M2 - Data Model and Content Import
@@ -87,7 +87,7 @@ Build a modern Angular-based catalog for mostly commercial laser tag gear, optim
 - Taxonomy drift without clear normalization rules.
 
 ## Immediate Next Actions
-1. Build first UI slice: catalog list + detail route.
-2. Draft initial schema and sample seed data.
-3. Decide primary production domain and redirects.
-4. Define environment configuration strategy.
+1. Draft GraphQL schema aligned with current seed data model.
+2. Decide primary production domain and redirects.
+3. Define environment configuration strategy.
+4. Add import script from legacy pages into seed/schema format.

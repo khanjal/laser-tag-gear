@@ -13,6 +13,15 @@ cd app
 npm start
 ```
 
+## Current App Routes
+- `/`: home page
+- `/catalog`: searchable/filterable gear list (seed data)
+- `/gear/:slug`: gear detail page
+
+## Seed Data Mode
+Until backend wiring is complete, data comes from:
+- `app/src/app/data/gear.seed.ts`
+
 ## Notes
 This repository is in early setup. See `docs/PROJECT_PLAN.md` for decisions, open questions, and roadmap.
 
