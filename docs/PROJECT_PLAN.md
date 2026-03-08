@@ -23,12 +23,17 @@ Build a modern Angular-based catalog for mostly commercial laser tag gear, optim
 - Marketplace or transactions.
 
 ## Architecture Decisions (Initial)
-- Frontend: Angular (SSR enabled scaffold).
+- Frontend: Angular in `app/` (SSR enabled scaffold).
+- Styling: Tailwind CSS v3 with custom theme.
 - Hosting: AWS Amplify Hosting.
 - API: AWS AppSync (GraphQL).
 - Data: DynamoDB.
 - Files: S3 (+ CloudFront distribution).
 - Auth: Cognito (admin-only in phase 2).
+
+## Domains
+- `lasertaggear.com`
+- `lasertagwiki.com`
 
 ## Open Questions
 - Confirm AWS region and account strategy.
@@ -39,7 +44,9 @@ Build a modern Angular-based catalog for mostly commercial laser tag gear, optim
 ## Milestones
 ## M1 - Foundation
 - [x] Create Angular scaffold.
-- [ ] Create GitHub repository and push initial code.
+- [x] Create GitHub repository and push initial code.
+- [x] Rename app folder to `app/`.
+- [x] Configure Tailwind styling.
 - [ ] Add baseline UI shell (home, catalog, gear detail routes).
 - [ ] Define environment configuration strategy.
 
@@ -80,7 +87,7 @@ Build a modern Angular-based catalog for mostly commercial laser tag gear, optim
 - Taxonomy drift without clear normalization rules.
 
 ## Immediate Next Actions
-1. Initialize git and create remote repository.
-2. Push scaffold and planning docs.
-3. Build first UI slice: catalog list + detail route.
-4. Draft initial schema and sample seed data.
+1. Build first UI slice: catalog list + detail route.
+2. Draft initial schema and sample seed data.
+3. Decide primary production domain and redirects.
+4. Define environment configuration strategy.
