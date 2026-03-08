@@ -6,6 +6,26 @@ export interface GearManual {
   url: string;
 }
 
+export interface GearSource {
+  sourceFile?: string;
+  sourceAnchor?: string;
+  sourceUrl?: string;
+}
+
+export interface GearLegacyData {
+  releasedRaw?: string | null;
+  modelNumberRaw?: string | null;
+  batteryRequirementRaw?: string | null;
+  rangeRaw?: string | null;
+  ammoRaw?: string | null;
+  accessoryPortsRaw?: string | null;
+  setNamesRaw?: string | null;
+  contentsRaw?: string | null;
+  originalPriceRaw?: string | null;
+  notesRaw?: string | null;
+  assetLinks?: string[];
+}
+
 export interface GearItem {
   id: string;
   slug: string;
@@ -20,4 +40,6 @@ export interface GearItem {
   tags: string[];
   description: string;
   manuals: GearManual[];
+  source?: GearSource;
+  legacy?: GearLegacyData;
 }
