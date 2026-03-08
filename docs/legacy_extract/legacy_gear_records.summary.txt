@@ -1,0 +1,10 @@
+﻿Total records: 63
+
+https://khanjal.com/lasertag/gear_laserchallenge_extreme.html => 9
+https://khanjal.com/lasertag/gear_laserchallenge_original.html => 25
+https://khanjal.com/lasertag/gear_laserchallenge_pro.html => 4
+https://khanjal.com/lasertag/gear_laserchallenge_v2.html => 11
+https://khanjal.com/lasertag/gear_lasercommand.html => 7
+https://khanjal.com/lasertag/gear_quickshot.html => 4
+https://khanjal.com/lasertag/gear_segalockon.html => 2
+https://khanjal.com/lasertag/gear_voicecommandlockon.html => 1
