@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { GEAR_SEED } from '../data/gear.seed';
 import { GearItem } from '../models/gear.model';
+import gearSeed from '../data/gear.seed.json';
 
 @Injectable({ providedIn: 'root' })
 export class GearRepository {
-  private readonly items = GEAR_SEED;
+  private readonly items: GearItem[] = gearSeed as GearItem[];
 
   getAll(): GearItem[] {
     return [...this.items].sort((a, b) => a.name.localeCompare(b.name));

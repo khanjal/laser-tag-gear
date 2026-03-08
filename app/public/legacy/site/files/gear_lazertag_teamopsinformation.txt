@@ -1,0 +1,24 @@
+The future of Lazer Tag is now!
+
+This summer (2004), Tiger/Hasbro will be launching the next step in the evolution of Lazer Tag, called Lazer Tag Team Ops (it has already been shown at Toy Fair in NYC and also there have been some press releases about it if you want to search the web). It is a huge advance over the previous Lazer Tag systems, much more like playing an online video game but for real. It offers completely programmable games, individual and team rankings, head-to-head tag comparisons (how many times I tagged you versus how many times you tagged me), and a whole list of extremely cool new features that I will post more about very soon. It has an LCD that displays all sorts of in-game stats, is fully integrated (transmitter and receiver are in the same unit, no seperate target to have to wear), and has an optional Heads-Up Display that you can wear so you will be visually alerted to certain game situations. I think it's the best thing since sliced bread, but then I might be a bit biased as I am one of the people who invented it!
+
+We have gone out of the way to make this a system that appeals to users of all ages -- I'm 41 and love the game!. For the young kids (7-10), there's still the grab-and-go game like the old Tiger LT had, which requires no special set-up. But for older or more advanced players, it allows full customization of the games (how many tags you can take, how many tags you have to fire, how long the game will last, how much shield time you have, etc.), team definitions, selectable game objectives, and a ton of other stuff to keep us old Lazer Tag junkies occupied for ages. There are eleven basic games built-in with literally thousands of variations possible for each one, and future products will support a huge number of new basic games.
+
+To answer some of the early questions --
+
+Range: Although I beleive the official claimed range for the first release is 250 feet, I've been getting more like 350-400 feet during the day.
+
+Price: There will be two Taggers and two HUD's (Heads-Up Displays) in a package for $59.95 MSRP, you'll probably be able to pick a set up at Toys R Us for $49.95 on sale. They should be on the shelves in July.
+
+Batteries: Each Tagger ("Starlyte") takes 6 "AA" batteries.
+
+Compatability:
+Sadly, it will not be compatable with any existing Tag Games, including WoW Lazer Tag and Tiger Lazer Tag. The reasons are as follows:
+
+The IR wavelengths used by the old WoW gear are not compatible with the newer IR diodes and detectors. The new detectors are used for availability, cost, and performance reasons -- there are not enough of the older types on the market any more to meet our demand, the modern equivalents cost way too much, and you can pump out a lot more actual IR energy and sense a lot less of it with the new low-cost components.
+
+The details of the signal format used in the old Tiger Lazer Tag made it incompatible with the new system for two reasons. The first problem was that modern lighting systems have a nasty habit of producing false signals that look too much like the Tiger LT signals, and the second is that we needed to pass a lot more data with each Tag in our new system, and the old signals did not allow for a high enough data rate to make this feasible, so we had to abandon the old system.
+
+It will not be compatible with any other tag systems out there. While it would have been nice and even technologically feasable to be compatible with some of the other systems, it is not possible from the business standpoint. This is because each company that invents a tag type game must patent the data structure they use in order to ensure that other companies can't rip off the design and steal their profits. But once the structure is patented, no-one else can use it without violating the first company's patents. A company could in theory pay the first comany for a license to use it's data structures, but as a general rule the company holding the patent isn't going to want other companies competing with them, so they are unlikely to agree to such a license. 
+
+

@@ -1,0 +1,304 @@
+$ErrorActionPreference = 'Stop'
+
+$repoRoot = Split-Path -Parent $PSScriptRoot
+Set-Location $repoRoot
+
+$legacyRoot = Join-Path $repoRoot 'old_lasertag_html'
+if (-not (Test-Path $legacyRoot)) {
+  throw "Missing legacy source directory: $legacyRoot"
+}
+
+$publicLegacyRoot = Join-Path $repoRoot 'app/public/legacy'
+$legacyDataRoot = Join-Path $repoRoot 'app/src/assets/data/legacy'
+$seedPath = Join-Path $repoRoot 'app/src/app/data/gear.seed.json'
+
+New-Item -ItemType Directory -Force -Path $publicLegacyRoot | Out-Null
+New-Item -ItemType Directory -Force -Path $legacyDataRoot | Out-Null
+
+function Clean-Text {
+  param([string]$Html)
+
+  $text = $Html
+  $text = $text -replace '(?is)<script.*?</script>', ' '
+  $text = $text -replace '(?is)<style.*?</style>', ' '
+  $text = $text -replace '(?i)<br\s*/?>', ' '
+  $text = $text -replace '(?i)</p>|</tr>|</table>|</li>|</h\d>|</td>|</font>', "`n"
+  $text = $text -replace '(?i)<p>|<li>|<tr>|<h\d[^>]*>|<td[^>]*>|<font[^>]*>', "`n"
+  $text = $text -replace '(?is)<[^>]+>', ' '
+  $text = [System.Net.WebUtility]::HtmlDecode($text)
+  return ($text -replace '\s+', ' ').Trim()
+}
+
+function Slugify {
+  param([string]$Value)
+
+  $slug = $Value.ToLowerInvariant()
+  $slug = $slug -replace '[^a-z0-9]+', '-'
+  $slug = $slug.Trim('-')
+  if ([string]::IsNullOrWhiteSpace($slug)) { return 'item' }
+  return $slug
+}
+
+function Parse-Year {
+  param([string]$Raw)
+
+  $m = [regex]::Match($Raw, '(19|20)\d{2}')
+  if ($m.Success) {
+    return [int]$m.Value
+  }
+  return 0
+}
+
+function Get-FieldValue {
+  param(
+    [string]$Block,
+    [string]$LabelRegex
+  )
+
+  $next = 'Model Number\s*\:|Battery Req\.\s*\:|Range\s*\:|Ammo\s*\:|Accessory Port\(s\)\s*\:|Set\(s\)\s*\:|Contents\s*\:|Original Price\s*\:|Info\s*\:|$'
+  $m = [regex]::Match($Block, "(?is)$LabelRegex\s*\:\s*(?<v>.*?)(?=$next)")
+  if ($m.Success) {
+    return ($m.Groups['v'].Value -replace '\s+', ' ').Trim()
+  }
+  return $null
+}
+
+$sourceMap = @{
+  'gear_laserchallenge_original' = @{ family = 'Laser Challenge Original'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_pro' = @{ family = 'Laser Challenge Pro'; manufacturer = 'ToyMax'; marketSegment = 'commercial'; playContext = 'hybrid' }
+  'gear_laserchallenge_v2' = @{ family = 'Laser Challenge V2'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_extreme' = @{ family = 'Laser Challenge Extreme'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_lasercommand' = @{ family = 'Laser Command / Laser Attack'; manufacturer = 'Astronomical Toys'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_quickshot' = @{ family = 'Quick Shot'; manufacturer = 'Radio Shack'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_segalockon' = @{ family = 'SEGA Lock-On'; manufacturer = 'SEGA'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_voicecommandlockon' = @{ family = 'Voice Command Lock-On'; manufacturer = 'Playmates Toys'; marketSegment = 'retail'; playContext = 'home' }
+}
+
+# 1) Mirror legacy site content to app/public/legacy/site.
+$legacySiteMirror = Join-Path $publicLegacyRoot 'site'
+if (Test-Path $legacySiteMirror) {
+  Remove-Item -Recurse -Force $legacySiteMirror
+}
+Copy-Item -Path $legacyRoot -Destination $legacySiteMirror -Recurse -Force
+
+# 2) Extract page text/links and gear records from local HTML.
+$htmlFiles = Get-ChildItem -Path $legacyRoot -File -Filter '*.html' | Sort-Object Name
+$pageRecords = @()
+$gearRecords = @()
+$linkedAssets = New-Object System.Collections.Generic.HashSet[string]
+$missingAssets = New-Object System.Collections.Generic.HashSet[string]
+
+foreach ($file in $htmlFiles) {
+  $html = Get-Content -Raw -Path $file.FullName
+
+  $titleMatch = [regex]::Match($html, '(?is)<title>(?<t>.*?)</title>')
+  $title = if ($titleMatch.Success) { (Clean-Text $titleMatch.Groups['t'].Value) } else { $file.BaseName }
+
+  $linkMatches = [regex]::Matches($html, '(?is)(?:href|src)\s*=\s*["''](?<u>[^"''#]+)["'']')
+  $links = @()
+  foreach ($m in $linkMatches) {
+    $u = $m.Groups['u'].Value.Trim()
+    if ($u -match '^(javascript:|mailto:|https?://|tel:)') { continue }
+    if ([string]::IsNullOrWhiteSpace($u)) { continue }
+
+    $resolved = Join-Path $file.DirectoryName $u
+    try {
+      $resolved = (Resolve-Path -LiteralPath $resolved -ErrorAction Stop).Path
+      $null = $linkedAssets.Add($resolved)
+    }
+    catch {
+      $null = $missingAssets.Add($u)
+    }
+
+    $links += $u
+  }
+
+  $pageText = Clean-Text $html
+  $pageRecords += [pscustomobject]@{
+    fileName = $file.Name
+    fileBase = $file.BaseName
+    title = $title
+    links = $links | Sort-Object -Unique
+    text = $pageText
+  }
+
+  if ($file.BaseName -notmatch '^gear_') { continue }
+
+  $anchorBlocks = [regex]::Matches($html, '(?is)<a\s+name="(?<anchor>[^"]+)"></a>(?<block>.*?)(?=<a\s+name="|$)')
+  foreach ($ab in $anchorBlocks) {
+    $anchor = $ab.Groups['anchor'].Value.Trim().ToLowerInvariant()
+    if ($anchor -in @('top', 'overview', 'gear', 'sets')) { continue }
+
+    $blockHtml = $ab.Groups['block'].Value
+    $blockText = Clean-Text $blockHtml
+
+    if ($blockText -notmatch 'Released\s*[-:]' -or $blockText -notmatch 'Battery Req\.\s*:') { continue }
+
+    $titleMatch2 = [regex]::Match($blockText, '^(?<t>.*?)\s+top\s+Released\s*[-:]', 'IgnoreCase')
+    if (-not $titleMatch2.Success) {
+      $titleMatch2 = [regex]::Match($blockText, '^(?<t>.*?)\s+Released\s*[-:]', 'IgnoreCase')
+    }
+    $entryTitle = if ($titleMatch2.Success) { ($titleMatch2.Groups['t'].Value -replace '\s+', ' ').Trim() } else { $anchor }
+    if ($entryTitle -match '^\(\d+\s*KB\)\s*') {
+      $entryTitle = $entryTitle -replace '^\(\d+\s*KB\)\s*', ''
+    }
+
+    $releasedMatch = [regex]::Match($blockText, '(?is)Released\s*[-:]\s*(?<v>.*?)(?=Model Number\s*\:|Battery Req\.\s*\:|Range\s*\:|Ammo\s*\:|Accessory Port\(s\)\s*\:|Set\(s\)\s*\:|Contents\s*\:|Original Price\s*\:|Info\s*\:|$)')
+    $releasedRaw = if ($releasedMatch.Success) { ($releasedMatch.Groups['v'].Value -replace '\s+', ' ').Trim() } else { '' }
+
+    $modelRaw = Get-FieldValue -Block $blockText -LabelRegex 'Model Number'
+    $batteryRaw = Get-FieldValue -Block $blockText -LabelRegex 'Battery Req\.'
+    $rangeRaw = Get-FieldValue -Block $blockText -LabelRegex 'Range'
+    $ammoRaw = Get-FieldValue -Block $blockText -LabelRegex 'Ammo'
+    $portsRaw = Get-FieldValue -Block $blockText -LabelRegex 'Accessory Port\(s\)'
+    $setNamesRaw = Get-FieldValue -Block $blockText -LabelRegex 'Set\(s\)'
+    $contentsRaw = Get-FieldValue -Block $blockText -LabelRegex 'Contents'
+    $priceRaw = Get-FieldValue -Block $blockText -LabelRegex 'Original Price'
+    $notesRaw = Get-FieldValue -Block $blockText -LabelRegex 'Info'
+
+    $kind = if ($contentsRaw -or $entryTitle -match '(?i)\b(Set|Pak)\b$') { 'set' } else { 'gear' }
+
+    $assetLinks = @()
+    $manualMatches = [regex]::Matches($blockHtml, '(?is)(?:href|src)\s*=\s*["''](?<u>[^"'']+)["'']')
+    foreach ($mm in $manualMatches) {
+      $u = $mm.Groups['u'].Value.Trim()
+      if ($u -match '^(javascript:|mailto:|https?://|#)') { continue }
+      if ($u -match '\.(pdf|zip|wav|mp3|ogg|gif|jpg|jpeg|png)$') {
+        $assetLinks += $u
+      }
+    }
+
+    $gearRecords += [pscustomobject]@{
+      sourceFile = $file.Name
+      sourcePath = "old_lasertag_html/$($file.Name)"
+      sourceUrl = "https://khanjal.com/lasertag/$($file.Name)"
+      anchor = $anchor
+      title = $entryTitle
+      kind = $kind
+      releasedRaw = $releasedRaw
+      modelNumberRaw = $modelRaw
+      batteryRequirementRaw = $batteryRaw
+      rangeRaw = $rangeRaw
+      ammoRaw = $ammoRaw
+      accessoryPortsRaw = $portsRaw
+      setNamesRaw = $setNamesRaw
+      contentsRaw = $contentsRaw
+      originalPriceRaw = $priceRaw
+      notesRaw = $notesRaw
+      assetLinks = $assetLinks | Sort-Object -Unique
+    }
+  }
+}
+
+# 3) Copy all linked assets into app/public/legacy/site-linked.
+$linkedOut = Join-Path $publicLegacyRoot 'site-linked'
+if (Test-Path $linkedOut) {
+  Remove-Item -Recurse -Force $linkedOut
+}
+New-Item -ItemType Directory -Force -Path $linkedOut | Out-Null
+
+foreach ($asset in $linkedAssets) {
+  if ([string]::IsNullOrWhiteSpace($asset)) { continue }
+  if (-not (Test-Path $asset)) { continue }
+  $relative = $asset.Replace($legacyRoot, '').TrimStart([char[]]@([char]92, [char]47))
+  if ($relative.StartsWith('..')) { continue }
+  $dest = Join-Path $linkedOut $relative
+  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dest) | Out-Null
+  Copy-Item -Path $asset -Destination $dest -Force
+}
+
+# 4) Build app seed JSON from extracted gear records.
+$seed = @()
+foreach ($r in $gearRecords) {
+  $base = [System.IO.Path]::GetFileNameWithoutExtension($r.sourceFile)
+  $map = $sourceMap[$base]
+  if (-not $map) { continue }
+
+  $id = Slugify("$base-$($r.anchor)")
+  $slug = Slugify("$($r.title)-$($r.anchor)")
+  $year = Parse-Year $r.releasedRaw
+
+  $tags = @('legacy-import', $r.kind, (Slugify $base))
+  if ($r.originalPriceRaw -and $r.originalPriceRaw -ne '$?') { $tags += 'priced' }
+  if ($r.modelNumberRaw) { $tags += 'model-number' }
+
+  $manuals = @()
+  foreach ($assetLink in $r.assetLinks) {
+    $clean = $assetLink.TrimStart('./')
+    $path = "/legacy/site/$clean"
+    $ext = [System.IO.Path]::GetExtension($clean).ToLowerInvariant()
+    if ($ext -in @('.pdf', '.zip', '.wav', '.mp3', '.ogg')) {
+      $manuals += [pscustomobject]@{
+        title = [System.IO.Path]::GetFileName($clean)
+        url = $path
+      }
+    }
+  }
+
+  $desc = if ($r.notesRaw) { $r.notesRaw } else { "Legacy imported entry for $($r.title)." }
+
+  $seed += [pscustomobject]@{
+    id = $id
+    slug = $slug
+    name = $r.title
+    family = $map.family
+    manufacturer = $map.manufacturer
+    marketSegment = $map.marketSegment
+    playContext = $map.playContext
+    eraStart = if ($year -gt 0) { $year } else { 0 }
+    compatibility = @($map.family)
+    tags = $tags | Sort-Object -Unique
+    description = $desc
+    manuals = $manuals
+    source = [pscustomobject]@{
+      sourceFile = $r.sourceFile
+      sourceAnchor = $r.anchor
+      sourceUrl = $r.sourceUrl
+    }
+    legacy = [pscustomobject]@{
+      releasedRaw = $r.releasedRaw
+      modelNumberRaw = $r.modelNumberRaw
+      batteryRequirementRaw = $r.batteryRequirementRaw
+      rangeRaw = $r.rangeRaw
+      ammoRaw = $r.ammoRaw
+      accessoryPortsRaw = $r.accessoryPortsRaw
+      setNamesRaw = $r.setNamesRaw
+      contentsRaw = $r.contentsRaw
+      originalPriceRaw = $r.originalPriceRaw
+      notesRaw = $r.notesRaw
+      assetLinks = $r.assetLinks
+    }
+  }
+}
+
+$seed = $seed | Sort-Object family, name
+
+# 5) Write outputs.
+$pageOut = Join-Path $legacyDataRoot 'pages.raw.json'
+$recordsOut = Join-Path $legacyDataRoot 'gear.records.raw.json'
+$missingOut = Join-Path $legacyDataRoot 'missing-links.json'
+$summaryOut = Join-Path $legacyDataRoot 'summary.json'
+
+$pageRecords | ConvertTo-Json -Depth 6 | Set-Content -Path $pageOut -Encoding UTF8
+$gearRecords | ConvertTo-Json -Depth 7 | Set-Content -Path $recordsOut -Encoding UTF8
+@($missingAssets) | Sort-Object -Unique | ConvertTo-Json -Depth 3 | Set-Content -Path $missingOut -Encoding UTF8
+$seed | ConvertTo-Json -Depth 8 | Set-Content -Path $seedPath -Encoding UTF8
+
+$summary = [pscustomobject]@{
+  htmlPages = $htmlFiles.Count
+  gearRecords = $gearRecords.Count
+  seedItems = $seed.Count
+  linkedAssetsFound = $linkedAssets.Count
+  missingLinkCount = @($missingAssets).Count
+  generatedAt = (Get-Date).ToString('s')
+}
+$summary | ConvertTo-Json -Depth 4 | Set-Content -Path $summaryOut -Encoding UTF8
+
+Write-Output "Wrote: $pageOut"
+Write-Output "Wrote: $recordsOut"
+Write-Output "Wrote: $missingOut"
+Write-Output "Wrote: $seedPath"
+Write-Output "Wrote: $summaryOut"
+Write-Output "Mirrored full legacy site to: $legacySiteMirror"
+Write-Output "Copied linked files to: $linkedOut"
+Write-Output ("Summary: pages={0}, records={1}, seed={2}, linkedAssets={3}, missing={4}" -f $summary.htmlPages, $summary.gearRecords, $summary.seedItems, $summary.linkedAssetsFound, $summary.missingLinkCount)
