@@ -49,6 +49,15 @@ function Parse-Year {
   return 0
 }
 
+function Extract-Spec {
+  param([string]$Raw)
+
+  if ([string]::IsNullOrWhiteSpace($Raw) -or $Raw -eq '?' -or $Raw -eq '--None--' -or $Raw -eq '-?-') {
+    return $null
+  }
+  return $Raw.Trim()
+}
+
 function Get-FieldValue {
   param(
     [string]$Block,
@@ -237,7 +246,7 @@ foreach ($r in $gearRecords) {
 
   $desc = if ($r.notesRaw) { $r.notesRaw } else { "Legacy imported entry for $($r.title)." }
 
-  $seed += [pscustomobject]@{
+  $seedItem = [pscustomobject]@{
     id = $id
     slug = $slug
     name = $r.title
@@ -250,6 +259,13 @@ foreach ($r in $gearRecords) {
     tags = $tags | Sort-Object -Unique
     description = $desc
     manuals = $manuals
+    modelNumber = Extract-Spec $r.modelNumberRaw
+    batteryRequirements = Extract-Spec $r.batteryRequirementRaw
+    range = Extract-Spec $r.rangeRaw
+    ammo = Extract-Spec $r.ammoRaw
+    accessoryPorts = Extract-Spec $r.accessoryPortsRaw
+    contents = Extract-Spec $r.contentsRaw
+    originalPrice = Extract-Spec $r.originalPriceRaw
     source = [pscustomobject]@{
       sourceFile = $r.sourceFile
       sourceAnchor = $r.anchor
@@ -269,6 +285,11 @@ foreach ($r in $gearRecords) {
       assetLinks = $r.assetLinks
     }
   }
+
+  # Remove null spec fields to keep JSON clean
+  $seedItem.PSObject.Properties | Where-Object Value -eq $null | ForEach-Object { $seedItem.PSObject.Properties.Remove($_.Name) }
+
+  $seed += $seedItem
 }
 
 $seed = $seed | Sort-Object family, name

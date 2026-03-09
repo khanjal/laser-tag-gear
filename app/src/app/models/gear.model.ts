@@ -40,6 +40,17 @@ export interface GearItem {
   tags: string[];
   description: string;
   manuals: GearManual[];
+  
+  // Product specifications
+  modelNumber?: string;
+  batteryRequirements?: string;
+  powerSource?: string;
+  range?: string;
+  ammo?: string;
+  accessoryPorts?: string;
+  contents?: string;
+  originalPrice?: string;
+  
   source?: GearSource;
   legacy?: GearLegacyData;
 }

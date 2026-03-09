@@ -42,22 +42,21 @@ export class GearDetailComponent {
       .slice(0, 4);
   }
 
-  get legacySpecs(): Array<{ label: string; value: string }> {
-    if (!this.gear?.legacy) {
+  get specs(): Array<{ label: string; value: string }> {
+    if (!this.gear) {
       return [];
     }
 
-    const l = this.gear.legacy;
-    const specs: Array<{ label: string; value: string | null | undefined }> = [
-      { label: 'Released', value: l.releasedRaw },
-      { label: 'Model Number', value: l.modelNumberRaw },
-      { label: 'Battery Requirements', value: l.batteryRequirementRaw },
-      { label: 'Range', value: l.rangeRaw },
-      { label: 'Ammo', value: l.ammoRaw },
-      { label: 'Accessory Ports', value: l.accessoryPortsRaw },
-      { label: 'Set(s)', value: l.setNamesRaw },
-      { label: 'Contents', value: l.contentsRaw },
-      { label: 'Original Price', value: l.originalPriceRaw }
+    const specs: Array<{ label: string; value: string | undefined }> = [
+      { label: 'Released', value: this.gear.eraStart?.toString() },
+      { label: 'Model Number', value: this.gear.modelNumber },
+      { label: 'Battery Requirements', value: this.gear.batteryRequirements },
+      { label: 'Power Source', value: this.gear.powerSource },
+      { label: 'Range', value: this.gear.range },
+      { label: 'Ammo', value: this.gear.ammo },
+      { label: 'Accessory Ports', value: this.gear.accessoryPorts },
+      { label: 'Contents', value: this.gear.contents },
+      { label: 'Original Price', value: this.gear.originalPrice }
     ];
 
     return specs

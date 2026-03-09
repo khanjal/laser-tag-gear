@@ -25,6 +25,10 @@
                             "url":  "/legacy/site/files/laserchallenge_extreme_minimayhem.pdf"
                         }
                     ],
+        "modelNumber":  "80646T/1",
+        "batteryRequirements":  "3 AAA\u0027s",
+        "range":  "150 ft.",
+        "ammo":  "25",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "gotchaminimayhem",
@@ -73,6 +77,9 @@
                             "url":  "/legacy/site/files/laserchallenge_extreme_gotcha.pdf"
                         }
                     ],
+        "batteryRequirements":  "3 AA\u0027s",
+        "range":  "350 ft.",
+        "ammo":  "25",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "gotchapistol",
@@ -123,6 +130,10 @@
                             "url":  "/legacy/site/files/laserchallenge_extreme_gotcha.pdf"
                         }
                     ],
+        "modelNumber":  "80634T/1",
+        "batteryRequirements":  "6 AA\u0027s",
+        "contents":  "2 (1 blue/1 red) Gotcha Extreme Vest s and 2 (1 blue/1 red) Gotcha Extreme Pistol s",
+        "originalPrice":  "$29.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "gotchaset",
@@ -171,6 +182,8 @@
                             "url":  "/legacy/site/files/laserchallenge_extreme_gotcha.pdf"
                         }
                     ],
+        "batteryRequirements":  "--Needs to be plugged into gun--",
+        "accessoryPorts":  "1",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "gotchavest",
@@ -219,6 +232,9 @@
                             "url":  "/legacy/site/files/laserchallenge_extreme_radar.pdf"
                         }
                     ],
+        "batteryRequirements":  "2 AA\u0027s",
+        "range":  "350 ft.",
+        "ammo":  "25",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "radarpistol",
@@ -269,6 +285,10 @@
                             "url":  "/legacy/site/files/laserchallenge_extreme_radar.pdf"
                         }
                     ],
+        "modelNumber":  "80632T/1",
+        "batteryRequirements":  "10 AA\u0027s",
+        "contents":  "2 (1 blue/1 red) Radar Extreme Vest s and 2 (1 blue/1 red) Radar Extreme Pistol s",
+        "originalPrice":  "$34.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "radarset",
@@ -317,6 +337,8 @@
                             "url":  "/legacy/site/files/laserchallenge_extreme_radar.pdf"
                         }
                     ],
+        "batteryRequirements":  "3 AA\u0027s",
+        "accessoryPorts":  "1",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "radarvest",
@@ -362,6 +384,8 @@
         "manuals":  [
 
                     ],
+        "range":  "250 ft.",
+        "ammo":  "25",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "teamforce250",
@@ -405,6 +429,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "? AA\u0027s",
+        "contents":  "2 Team Force 250 Guns/Vests (1 Red/ 1 Blue)",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_extreme.html",
                        "sourceAnchor":  "teamforce250set",
@@ -449,6 +476,8 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "--None needed, plugs into Laser Alley--",
+        "originalPrice":  "$14.99 each.",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "airmineandexplodroid",
@@ -497,6 +526,9 @@
                             "url":  "/legacy/site/files/laserchallenge_original_bart.pdf"
                         }
                     ],
+        "modelNumber":  "80508",
+        "batteryRequirements":  "3 AA\u0027s, 1 9-Volt",
+        "originalPrice":  "$? and 30 Laser Points",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "bartdroid",
@@ -547,6 +579,9 @@
                             "url":  "/legacy/site/files/laserchallenge_original_backvest.pdf"
                         }
                     ],
+        "modelNumber":  "80513",
+        "batteryRequirements":  "--None needed, plugs into front vest--",
+        "originalPrice":  "$14.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "backvest",
@@ -597,6 +632,9 @@
                             "url":  "/legacy/site/files/laserchallenge_original_ctf.pdf"
                         }
                     ],
+        "modelNumber":  "80519",
+        "batteryRequirements":  "2 AA\u0027s per flag",
+        "originalPrice":  "$34.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "ctf",
@@ -642,6 +680,8 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "2 AA\u0027s",
+        "range":  "150 ft.",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "cybersplashpistol",
@@ -686,6 +726,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "10 AA\u0027s and 2 9-Volts",
+        "contents":  "1 Cybersplash Vest and 1 Cybersplash Pistol",
+        "originalPrice":  "$34.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "cybersplashset",
@@ -729,6 +772,7 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "3 AA\u0027s and 1 9-Volt",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "cybersplashvest",
@@ -776,6 +820,10 @@
                             "url":  "/legacy/site/files/laserchallenge_original_dualtarget.pdf"
                         }
                     ],
+        "modelNumber":  "80503",
+        "batteryRequirements":  "8 AA\u0027s, 1 9-Volt",
+        "contents":  "1 Front Vest , 1 Laser Pistol , and 1 B.A.R.T.",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "dualtargetset",
@@ -826,6 +874,11 @@
                             "url":  "/legacy/site/files/laserchallenge_original_exd.pdf"
                         }
                     ],
+        "modelNumber":  "80514",
+        "batteryRequirements":  "4 AA\u0027s",
+        "range":  "200 ft.",
+        "ammo":  "25",
+        "originalPrice":  "$19.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "exd",
@@ -871,6 +924,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "16 AA\u0027s",
+        "contents":  "2 Front Vest s, 2 EX-D Rifles, and 1 Laser Trap",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "ex-tremepak",
@@ -921,6 +977,8 @@
                             "url":  "/legacy/site/files/sound_gear_laserchallenge_frontvest_powerup.wav"
                         }
                     ],
+        "batteryRequirements":  "3 AA\u0027s",
+        "accessoryPorts":  "1",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "frontvest",
@@ -973,6 +1031,11 @@
                             "url":  "/legacy/site/files/laserchallenge_original_laseralley.pdf"
                         }
                     ],
+        "modelNumber":  "80526",
+        "batteryRequirements":  "4 AA\u0027s",
+        "range":  "50 ft.",
+        "accessoryPorts":  "2",
+        "originalPrice":  "$34.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "laseralley",
@@ -1021,6 +1084,9 @@
                             "url":  "/legacy/site/files/laserchallenge_original_dualtarget.pdf"
                         }
                     ],
+        "batteryRequirements":  "2 AA\u0027s",
+        "range":  "50 ft.",
+        "ammo":  "6",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "laserpistol",
@@ -1071,6 +1137,10 @@
                             "url":  "/legacy/site/files/laserchallenge_original_lasertrap.pdf"
                         }
                     ],
+        "modelNumber":  "80511T/2",
+        "batteryRequirements":  "2 AA\u0027s",
+        "range":  "50 ft. (360 o blast)",
+        "originalPrice":  "$14.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "lasertrap",
@@ -1117,6 +1187,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "3 AA\u0027s",
+        "range":  "6 ft.",
+        "originalPrice":  "$19.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "lightwarriors",
@@ -1165,6 +1238,11 @@
                             "url":  "/legacy/site/files/laserchallenge_original_micromax.pdf"
                         }
                     ],
+        "modelNumber":  "80543",
+        "batteryRequirements":  "5 AAA\u0027s; 2 in the gun, 3 in the base.",
+        "range":  "50 - 150 ft.",
+        "ammo":  "12",
+        "originalPrice":  "$19.99 / 2 units",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "micromaxblaster",
@@ -1212,6 +1290,10 @@
         "manuals":  [
 
                     ],
+        "modelNumber":  "80501",
+        "batteryRequirements":  "5 AA\u0027s",
+        "contents":  "1 Front Vest and 1 Laser Pistol",
+        "originalPrice":  "$19.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "patrolset",
@@ -1253,6 +1335,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "3 AA\u0027s, 1 9-Volt",
+        "range":  "25 ft.",
+        "originalPrice":  "$19.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "shootbackbart",
@@ -1296,6 +1381,7 @@
         "manuals":  [
 
                     ],
+        "range":  "150 ft.",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "specialedition",
@@ -1339,6 +1425,8 @@
         "manuals":  [
 
                     ],
+        "contents":  "2 Vest/Gun Combo Units",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "specialeditionset",
@@ -1383,6 +1471,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "7 AA\u0027s",
+        "contents":  "1 Front Vest , 1 Back Vest , and 1 EX-D",
+        "originalPrice":  "$29.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "supercompset",
@@ -1427,6 +1518,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "10 AA\u0027s",
+        "contents":  "2 Front Vests and 2 Pistols",
+        "originalPrice":  "$34.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "teamforce2set",
@@ -1468,6 +1562,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "10 AA\u0027s",
+        "contents":  "2 Front Vests and 2 Pistols",
+        "originalPrice":  "$34.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "teamforce2000set",
@@ -1513,6 +1610,10 @@
         "manuals":  [
 
                     ],
+        "modelNumber":  "80504",
+        "batteryRequirements":  "10 AA\u0027s",
+        "contents":  "2 Front Vest s and 2 Laser Pistol s",
+        "originalPrice":  "$34.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "teamforceset",
@@ -1557,6 +1658,10 @@
         "manuals":  [
 
                     ],
+        "modelNumber":  "80502",
+        "batteryRequirements":  "5 AA\u0027s, 1 9-Volt",
+        "contents":  "1 Laser Pistol and 1 B.A.R.T.",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_original.html",
                        "sourceAnchor":  "tournamentset",
@@ -1598,6 +1703,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "14 AA\u0027s",
+        "contents":  "2 Laser Challenge Pro Vests",
+        "originalPrice":  "$119.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_pro.html",
                        "sourceAnchor":  "clashpak",
@@ -1642,6 +1750,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "7 AA\u0027s",
+        "contents":  "1 Laser Challenge Pro Vest",
+        "originalPrice":  "$69.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_pro.html",
                        "sourceAnchor":  "competitorpak",
@@ -1685,6 +1796,10 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "7 AA\u0027s; 4 in front, 3 in back",
+        "range":  "200 ft.",
+        "ammo":  "Depends on mode",
+        "accessoryPorts":  "3",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_pro.html",
                        "sourceAnchor":  "laserpro",
@@ -1729,6 +1844,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "1 9-Volt",
+        "range":  "900 ft.",
+        "originalPrice":  "$24.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_pro.html",
                        "sourceAnchor":  "walkietalkie",
@@ -1777,6 +1895,9 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_elsadapter.pdf"
                         }
                     ],
+        "modelNumber":  "80722",
+        "contents":  "2 (1 blue/1 red) ELS Adapter s",
+        "originalPrice":  "$19.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "adapterpak",
@@ -1825,6 +1946,7 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_elsadapter.pdf"
                         }
                     ],
+        "accessoryPorts":  "2",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "elsadapter",
@@ -1877,6 +1999,8 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_elsprint.zip"
                         }
                     ],
+        "batteryRequirements":  "3 AA\u0027s",
+        "accessoryPorts":  "3; 2 gun and 1 Parallel",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "elscomputer",
@@ -1929,6 +2053,10 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_elscomputer.pdf"
                         }
                     ],
+        "modelNumber":  "80711",
+        "batteryRequirements":  "3 AA\u0027s",
+        "contents":  "1 ELS Computer and 2 ELS Adapter s(1 Blue and 1 Red)",
+        "originalPrice":  "$49.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "elsgamesystem",
@@ -1979,6 +2107,11 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_firestorm.pdf"
                         }
                     ],
+        "modelNumber":  "80613",
+        "batteryRequirements":  "6 AA\u0027s (take out front 3 to disable recoil)",
+        "range":  "1000 ft.",
+        "ammo":  "25",
+        "originalPrice":  "$29.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "firestorm",
@@ -2028,6 +2161,9 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_set.pdf"
                         }
                     ],
+        "batteryRequirements":  "6 AA\u0027s",
+        "contents":  "1 V2 Vest and 1 V2 Pistol",
+        "originalPrice":  "$24.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "sologear",
@@ -2076,6 +2212,9 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_set.pdf"
                         }
                     ],
+        "batteryRequirements":  "12 AA\u0027s",
+        "contents":  "2 V2 Vest s and 2 V2 Pistol s",
+        "originalPrice":  "$49.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "twingear",
@@ -2126,6 +2265,11 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_ultrawide.pdf"
                         }
                     ],
+        "modelNumber":  "80614",
+        "batteryRequirements":  "3 AA\u0027s",
+        "range":  "350 ft./Max spread 50 ft. wide",
+        "ammo":  "25 Normal/1 shot every 5 seconds on Ultrawide",
+        "originalPrice":  "$29.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "ultrawide",
@@ -2172,6 +2316,8 @@
         "manuals":  [
 
                     ],
+        "contents":  "1 V2 Vest and 1 Ultrawide",
+        "originalPrice":  "$24.99",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "ultrawideblasterset",
@@ -2218,6 +2364,9 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_set.pdf"
                         }
                     ],
+        "batteryRequirements":  "3 AA\u0027s",
+        "range":  "350 ft",
+        "ammo":  "25",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "v2pistol",
@@ -2266,6 +2415,8 @@
                             "url":  "/legacy/site/files/laserchallenge_v2_set.pdf"
                         }
                     ],
+        "batteryRequirements":  "3 AA\u0027s",
+        "accessoryPorts":  "1",
         "source":  {
                        "sourceFile":  "gear_laserchallenge_v2.html",
                        "sourceAnchor":  "v2vest",
@@ -2311,6 +2462,8 @@
         "manuals":  [
 
                     ],
+        "contents":  "1 Laser Command/Attack Pistol and 1 Laser Command/Attack Vest",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_lasercommand.html",
                        "sourceAnchor":  "laserattackset",
@@ -2354,6 +2507,7 @@
         "manuals":  [
 
                     ],
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_lasercommand.html",
                        "sourceAnchor":  "lasercommandhat",
@@ -2397,6 +2551,8 @@
         "manuals":  [
 
                     ],
+        "contents":  "1 Laser Command/Attack Pistol and 1 Laser Command/Attack Vest",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_lasercommand.html",
                        "sourceAnchor":  "lasercommandset",
@@ -2444,6 +2600,10 @@
                             "url":  "/legacy/site/files/lasercommand_stealthatomizer.pdf"
                         }
                     ],
+        "batteryRequirements":  "2 AA\u0027s",
+        "range":  "200 ft.",
+        "ammo":  "5 Semi-Automatic/15 Full Automatic",
+        "originalPrice":  "$12.99",
         "source":  {
                        "sourceFile":  "gear_lasercommand.html",
                        "sourceAnchor":  "lasercommandstealthatomizer",
@@ -2532,6 +2692,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "2 AA\u0027s",
+        "range":  "100 ft.",
+        "ammo":  "5",
         "source":  {
                        "sourceFile":  "gear_lasercommand.html",
                        "sourceAnchor":  "lasercommand/attackpistol",
@@ -2615,6 +2778,9 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "4 AA\u0027s",
+        "range":  "100 ft.",
+        "ammo":  "Unlimited",
         "source":  {
                        "sourceFile":  "gear_quickshot.html",
                        "sourceAnchor":  "lazerpistol",
@@ -2655,6 +2821,7 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "4 AA\u0027s",
         "source":  {
                        "sourceFile":  "gear_quickshot.html",
                        "sourceAnchor":  "electronictarget",
@@ -2696,6 +2863,10 @@
         "manuals":  [
 
                     ],
+        "modelNumber":  "QS2040",
+        "batteryRequirements":  "8 AA\u0027s",
+        "contents":  "1 Lazer Pistol , 1 Electronic Target , and 1 Sensor",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_quickshot.html",
                        "sourceAnchor":  "quickshotset",
@@ -2779,6 +2950,10 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "1 9-Volt and 2 C\u0027s",
+        "range":  "350 ft.",
+        "ammo":  "Single/Rapid fire(5 shots/sec), 10 high powered shots",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_segalockon.html",
                        "sourceAnchor":  "segalockon",
@@ -2822,6 +2997,10 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "4 AA\u0027s and 2 C\u0027s",
+        "range":  "350 ft.",
+        "ammo":  "Single/Rapid fire(5 shots/sec), 10 high powered shots",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_segalockon.html",
                        "sourceAnchor":  "segalockon2",
@@ -2865,6 +3044,8 @@
         "manuals":  [
 
                     ],
+        "batteryRequirements":  "4 AA\u0027s and 2 C\u0027s",
+        "originalPrice":  "$?",
         "source":  {
                        "sourceFile":  "gear_voicecommandlockon.html",
                        "sourceAnchor":  "voicecommandlockon",
