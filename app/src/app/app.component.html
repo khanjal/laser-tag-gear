@@ -1,7 +1,7 @@
 <main class="mx-auto min-h-screen max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-  <header class="mb-6 rounded-2xl border border-ops-grid bg-ops-surface/90 p-4 shadow-scan sm:p-6">
+  <header class="retro-panel mb-6 rounded-2xl border border-ops-grid bg-ops-surface/90 p-4 shadow-scan sm:p-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
-      <a routerLink="/" class="font-display text-xl uppercase tracking-[0.16em] text-ops-ink sm:text-2xl">
+      <a routerLink="/" class="retro-title retro-flicker font-display text-xl uppercase tracking-[0.16em] text-ops-ink sm:text-2xl">
         Laser Tag Gear
       </a>
 
@@ -9,16 +9,25 @@
         <a
           routerLink="/"
           [routerLinkActiveOptions]="{ exact: true }"
-          routerLinkActive="bg-ops-ink text-ops-paper"
-          class="rounded-md border border-ops-grid bg-white/80 px-3 py-1.5 text-ops-ink"
+          routerLinkActive="nav-active"
+          class="retro-button rounded-md border border-ops-grid bg-white/80 px-3 py-1.5 text-ops-ink"
           >Home</a
         >
         <a
           routerLink="/catalog"
-          routerLinkActive="bg-ops-ink text-ops-paper"
-          class="rounded-md border border-ops-grid bg-white/80 px-3 py-1.5 text-ops-ink"
+          routerLinkActive="nav-active"
+          class="retro-button rounded-md border border-ops-grid bg-white/80 px-3 py-1.5 text-ops-ink"
           >Catalog</a
         >
+        <button
+          type="button"
+          (click)="cycleTheme()"
+          [attr.aria-label]="'Theme mode: ' + themeLabel + '. Click to change'"
+          class="retro-button relative inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-ops-grid bg-white/80 p-2 text-ops-ink"
+          title="Change theme"
+        >
+          <span class="material-symbols-outlined theme-icon" aria-hidden="true">{{ themeIconName }}</span>
+        </button>
       </nav>
     </div>
   </header>

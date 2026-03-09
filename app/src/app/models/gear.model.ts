@@ -1,4 +1,4 @@
-export type GearMarketSegment = 'retail' | 'commercial' | 'military' | 'prosumer';
+export type GearMarketSegment = 'retail' | 'commercial' | 'military' | 'prosumer' | 'hobby' | 'homemade' | 'other';
 export type GearPlayContext = 'home' | 'arena' | 'hybrid';
 
 export interface GearManual {
@@ -46,6 +46,7 @@ export interface GearItem {
   series?: string;
   family: string;
   manufacturer: string;
+  colors?: string[];
   marketSegment: GearMarketSegment;
   playContext: GearPlayContext;
   eraStart: number;

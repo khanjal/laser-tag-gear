@@ -120,6 +120,43 @@ function Get-AssetKind {
   }
 }
 
+function Normalize-AssetLink {
+  param([string]$Link)
+
+  if ([string]::IsNullOrWhiteSpace($Link)) {
+    return $null
+  }
+
+  $normalized = $Link.Trim().Replace('\\', '/')
+
+  if ($normalized -match '^(?i)(javascript:|mailto:|#)') {
+    return $null
+  }
+
+  $legacyUrl = [regex]::Match($normalized, '^(?i)https?://(?:www\.)?khanjal\.com/lasertag/(?<p>.+)$')
+  if ($legacyUrl.Success) {
+    return $legacyUrl.Groups['p'].Value.TrimStart('/')
+  }
+
+  $normalized = $normalized.TrimStart('.').TrimStart('/')
+  return $normalized
+}
+
+function Clean-DescriptionText {
+  param([string]$Text)
+
+  if ([string]::IsNullOrWhiteSpace($Text)) {
+    return $Text
+  }
+
+  $clean = $Text
+  # Remove embedded filename + size mentions; files are surfaced in dedicated sections.
+  $clean = $clean -replace '(?i)\b[\w\-]+\.(pdf|zip|doc|docx|txt|wav|mp3|ogg)\s*\(\d+\s*KB\)', ''
+  $clean = $clean -replace '\s{2,}', ' '
+  $clean = $clean -replace '\s+([,.;:!?])', '$1'
+  return $clean.Trim()
+}
+
 function Get-FieldValue {
   param(
     [string]$Block,
@@ -134,12 +171,77 @@ function Get-FieldValue {
   return $null
 }
 
+function Get-InfoValueFromHtml {
+  param([string]$BlockHtml)
+
+  if ([string]::IsNullOrWhiteSpace($BlockHtml)) {
+    return $null
+  }
+
+  # Info text is usually followed by a blank line and then script/img/link blocks.
+  $m = [regex]::Match(
+    $BlockHtml,
+    '(?is)<u>\s*<b>\s*Info\s*</b>\s*</u>\s*:\s*(?<v>.*?)(?=<br\s*/?>\s*<br\s*/?>\s*(?:<script|<img|<a)|$)'
+  )
+
+  if (-not $m.Success) {
+    $m = [regex]::Match($BlockHtml, '(?is)<u>\s*<b>\s*Info\s*</b>\s*</u>\s*:\s*(?<v>.*)$')
+  }
+
+  if (-not $m.Success) {
+    return $null
+  }
+
+  return Clean-Text $m.Groups['v'].Value
+}
+
+function Extract-Color {
+  param([string]$Title)
+
+  $colorPatterns = @(
+    @{ pattern = '\b(Red|Blue|Black|White|Yellow|Green|Orange|Purple|Silver|Gold|Gray|Grey|Cammo|Camo)\s*(?:Vest|Pistol|Gun|Blaster|Rifle|Laser|Marker|Badge|Hat|Set|Pack)'; name = 1 },
+    @{ pattern = '\((\w+(?:\s+\w+)?)\)\s*$'; name = 1 }
+  )
+
+  foreach ($cp in $colorPatterns) {
+    $m = [regex]::Match($Title, $cp.pattern, 'IgnoreCase')
+    if ($m.Success) {
+      $color = $m.Groups[$cp.name].Value.Trim()
+      if ($color -and $color -notmatch '(?i)^(set|pack|gear|vest|pistol|gun|blaster|rifle|laser|marker|badge|hat)$') {
+        return $color
+      }
+    }
+  }
+
+  return $null
+}
+
+function Get-BaseName {
+  param([string]$Title)
+
+  # Try to extract base name by removing color+equipment term
+  $colorEquipPattern = '\s+(Red|Blue|Black|White|Yellow|Green|Orange|Purple|Silver|Gold|Gray|Grey|Cammo|Camo)\s+(Vest|Pistol|Gun|Blaster|Rifle|Laser|Marker|Badge|Hat|Set|Pack)\s*$'
+  $renamed = $Title -replace $colorEquipPattern, ' $2'
+  if ($renamed -ne $Title) {
+    return $renamed.Trim()
+  }
+
+  # Try to remove parenthetical color
+  $parenColorPattern = '\s*\([A-Za-z\s]+\)\s*$'
+  $renamed = $Title -replace $parenColorPattern, ''
+  if ($renamed -ne $Title) {
+    return $renamed.Trim()
+  }
+
+  return $Title
+}
+
 $sourceMap = @{
-  'gear_laserchallenge_original' = @{ series = 'Laser Challenge'; family = 'Laser Challenge Original'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_laserchallenge_pro' = @{ series = 'Laser Challenge'; family = 'Laser Challenge Pro'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_laserchallenge_v2' = @{ series = 'Laser Challenge'; family = 'Laser Challenge V2'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_laserchallenge_extreme' = @{ series = 'Laser Challenge'; family = 'Laser Challenge Extreme'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_lasercommand' = @{ series = 'Laser Command'; family = 'Laser Command / Laser Attack'; manufacturer = 'Astronomical Toys'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_original' = @{ series = 'Laser Challenge'; family = 'Original'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_pro' = @{ series = 'Laser Challenge'; family = 'Pro'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_v2' = @{ series = 'Laser Challenge'; family = 'V2'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_extreme' = @{ series = 'Laser Challenge'; family = 'Extreme'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_lasercommand' = @{ series = 'Laser Command'; family = 'Laser Attack'; manufacturer = 'Astronomical Toys'; marketSegment = 'retail'; playContext = 'home' }
   'gear_quickshot' = @{ series = 'Quick Shot'; family = 'Quick Shot'; manufacturer = 'Radio Shack'; marketSegment = 'retail'; playContext = 'home' }
   'gear_segalockon' = @{ series = 'Lock-On'; family = 'SEGA Lock-On'; manufacturer = 'SEGA'; marketSegment = 'retail'; playContext = 'home' }
   'gear_voicecommandlockon' = @{ series = 'Lock-On'; family = 'Voice Command Lock-On'; manufacturer = 'Playmates Toys'; marketSegment = 'retail'; playContext = 'home' }
@@ -225,7 +327,10 @@ foreach ($file in $htmlFiles) {
     $setNamesRaw = Get-FieldValue -Block $blockText -LabelRegex 'Set\(s\)'
     $contentsRaw = Get-FieldValue -Block $blockText -LabelRegex 'Contents'
     $priceRaw = Get-FieldValue -Block $blockText -LabelRegex 'Original Price'
-    $notesRaw = Get-FieldValue -Block $blockText -LabelRegex 'Info'
+    $notesRaw = Get-InfoValueFromHtml -BlockHtml $blockHtml
+    if (-not $notesRaw) {
+      $notesRaw = Get-FieldValue -Block $blockText -LabelRegex 'Info'
+    }
 
     $kind = if ($contentsRaw -or $entryTitle -match '(?i)\b(Set|Pak)\b$') { 'set' } else { 'gear' }
 
@@ -233,9 +338,21 @@ foreach ($file in $htmlFiles) {
     $manualMatches = [regex]::Matches($blockHtml, '(?is)(?:href|src)\s*=\s*["''](?<u>[^"'']+)["'']')
     foreach ($mm in $manualMatches) {
       $u = $mm.Groups['u'].Value.Trim()
-      if ($u -match '^(javascript:|mailto:|https?://|#)') { continue }
       if ($u -match '(?i)\.(html?)$') { continue }
-      $assetLinks += $u
+
+      $normalizedAsset = Normalize-AssetLink $u
+      if (-not $normalizedAsset) { continue }
+      $assetLinks += $normalizedAsset
+    }
+
+    # Legacy image links are often embedded in JavaScript popup handlers.
+    $popupMatches = [regex]::Matches($blockHtml, '(?is)window\.open\(\s*["''](?<u>[^"'']+)["'']')
+    foreach ($pm in $popupMatches) {
+      $u = $pm.Groups['u'].Value.Trim()
+      $normalizedAsset = Normalize-AssetLink $u
+      if (-not $normalizedAsset) { continue }
+      if ($normalizedAsset -match '(?i)\.(html?)$') { continue }
+      $assetLinks += $normalizedAsset
     }
 
     $gearRecords += [pscustomobject]@{
@@ -320,7 +437,7 @@ foreach ($r in $gearRecords) {
       }
     })
 
-  $desc = if ($r.notesRaw) { $r.notesRaw } else { "Legacy imported entry for $($r.title)." }
+  $desc = if ($r.notesRaw) { Clean-DescriptionText $r.notesRaw } else { "Legacy imported entry for $($r.title)." }
 
   $releasedValue = Extract-Spec $r.releasedRaw
   $modelValue = Extract-Spec $r.modelNumberRaw
@@ -332,40 +449,19 @@ foreach ($r in $gearRecords) {
   $setNamesValue = Extract-Spec $r.setNamesRaw
   $contentsValue = Extract-Spec $r.contentsRaw
   $priceValue = Extract-Spec $r.originalPriceRaw
-  $notesValue = Extract-Spec $r.notesRaw
+  $notesValue = Clean-DescriptionText (Extract-Spec $r.notesRaw)
 
-  # Human-friendly, user-clickable tags.
+  # Keep tags focused on product-level classification only.
   $tagSet = New-Object 'System.Collections.Generic.HashSet[string]'
-  foreach ($batteryPack in $batteryPacks) {
-    if (-not $batteryPack.type) { continue }
-    $label = "Battery: $($batteryPack.type)"
-    if ($batteryPack.quantity) {
-      $label = "$label [$($batteryPack.quantity)]"
-    }
-    $null = $tagSet.Add($label)
-  }
-
-  if ($modelValue) { $null = $tagSet.Add('Model Number') }
-  if ($rangeValue) { $null = $tagSet.Add('Range Listed') }
-  if ($ammoValue) { $null = $tagSet.Add('Ammo Listed') }
-  if ($priceValue) { $null = $tagSet.Add('Price Listed') }
-  if ($portValue) { $null = $tagSet.Add('Accessory Port') }
-  if ($setNamesValue) { $null = $tagSet.Add('Set Name Listed') }
-
-  $assetKinds = @($assets | ForEach-Object { $_.kind } | Sort-Object -Unique)
-  foreach ($assetKind in $assetKinds) {
-    switch ($assetKind) {
-      'manual' { $null = $tagSet.Add('Manual Available') }
-      'audio' { $null = $tagSet.Add('Sound File') }
-      'image' { $null = $tagSet.Add('Image Available') }
-      'archive' { $null = $tagSet.Add('Archive File') }
-      'document' { $null = $tagSet.Add('Document File') }
-      default { $null = $tagSet.Add('Related File') }
-    }
-  }
 
   if ($r.kind -eq 'set') {
     $null = $tagSet.Add('Set')
+  }
+
+  $lineLabel = if ($map.series -and $map.family -and $map.series -ne $map.family) {
+    "$($map.series) $($map.family)"
+  } else {
+    $map.family
   }
 
   $seedItem = [pscustomobject]@{
@@ -378,7 +474,7 @@ foreach ($r in $gearRecords) {
     marketSegment = $map.marketSegment
     playContext = $map.playContext
     eraStart = if ($year -gt 0) { $year } else { 0 }
-    compatibility = @($map.family)
+    compatibility = @($lineLabel)
     tags = @($tagSet | Sort-Object)
     description = $desc
     manuals = $manuals
@@ -416,6 +512,88 @@ foreach ($r in $gearRecords) {
 
   $seed += $seedItem
 }
+
+# 4b) Consolidate color variants into a single item with colors array.
+$colorGroups = @{}
+$consolidatedSeed = @()
+$usedIndices = New-Object System.Collections.Generic.HashSet[int]
+
+for ($i = 0; $i -lt $seed.Count; $i++) {
+  if ($usedIndices.Contains($i)) { continue }
+
+  $item = $seed[$i]
+  $baseName = Get-BaseName $item.name
+  $color = Extract-Color $item.name
+  $groupKey = "$($item.series)::$($item.family)::$($item.manufacturer)::$baseName"
+
+  $groupItems = @()
+  $groupItems += $i
+  $null = $usedIndices.Add($i)
+
+  # Find other items in the same group
+  for ($j = $i + 1; $j -lt $seed.Count; $j++) {
+    if ($usedIndices.Contains($j)) { continue }
+    $otherItem = $seed[$j]
+    $otherBaseName = Get-BaseName $otherItem.name
+    $otherKey = "$($otherItem.series)::$($otherItem.family)::$($otherItem.manufacturer)::$otherBaseName"
+
+    if ($otherKey -eq $groupKey) {
+      $groupItems += $j
+      $null = $usedIndices.Add($j)
+    }
+  }
+
+  # If we found color variants, consolidate them
+  if ($groupItems.Count -gt 1) {
+    $primary = $seed[$groupItems[0]]
+    $colors = New-Object System.Collections.Generic.HashSet[string]
+
+    $allAssets = @()
+    $allManuals = @()
+    $allTags = New-Object System.Collections.Generic.HashSet[string]
+
+    foreach ($idx in $groupItems) {
+      $variant = $seed[$idx]
+      $variantColor = Extract-Color $variant.name
+
+      if ($variantColor) {
+        $null = $colors.Add($variantColor)
+      }
+
+      # Merge assets and manuals from all variants
+      if ($variant.assets) {
+        $allAssets += $variant.assets
+      }
+      if ($variant.manuals) {
+        $allManuals += $variant.manuals
+      }
+      if ($variant.tags) {
+        foreach ($tag in $variant.tags) {
+          $null = $allTags.Add($tag)
+        }
+      }
+    }
+
+    # Update primary item with consolidated data
+    $primary.colors = @($colors | Sort-Object)
+    $primary.assets = @($allAssets | Sort-Object -Property kind, name -Unique)
+    $primary.manuals = @($allManuals | Sort-Object -Property title -Unique)
+    $primary.tags = @($allTags | Sort-Object)
+
+    # Update name to base name if it had a color suffix
+    if ($color) {
+      $primary.name = $baseName
+      $primary.slug = Slugify($baseName)
+    }
+
+    $consolidatedSeed += $primary
+  } else {
+    # No variants found, keep as-is
+    $consolidatedSeed += $item
+  }
+}
+
+$seed = $consolidatedSeed
 
 $seed = $seed | Sort-Object family, name
 

@@ -5,21 +5,21 @@ module.exports = {
     extend: {
       colors: {
         ops: {
-          paper: '#f4f1e8',
-          surface: '#fffaf0',
-          grid: '#d5ccb8',
-          ink: '#121417',
-          laser: '#00c2d7',
-          ember: '#ff6a00',
-          moss: '#365a3f'
+          paper: 'rgb(var(--ops-paper) / <alpha-value>)',
+          surface: 'rgb(var(--ops-surface) / <alpha-value>)',
+          grid: 'rgb(var(--ops-grid) / <alpha-value>)',
+          ink: 'rgb(var(--ops-ink) / <alpha-value>)',
+          laser: 'rgb(var(--ops-laser) / <alpha-value>)',
+          ember: 'rgb(var(--ops-ember) / <alpha-value>)',
+          moss: 'rgb(var(--ops-moss) / <alpha-value>)'
         }
       },
       fontFamily: {
         display: ['Orbitron', 'sans-serif'],
-        body: ['Rajdhani', 'sans-serif']
+        body: ['Chakra Petch', 'sans-serif']
       },
       boxShadow: {
-        scan: '0 0 0 1px rgba(0, 194, 215, 0.25), 0 10px 30px rgba(18, 20, 23, 0.12)'
+        scan: '0 0 0 1px rgba(0, 228, 255, 0.4), 0 0 0 3px rgba(255, 122, 26, 0.1), 0 12px 30px rgba(26, 18, 8, 0.2)'
       }
     },
   },

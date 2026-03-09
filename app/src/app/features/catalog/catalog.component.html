@@ -1,14 +1,14 @@
-<section class="rounded-2xl border border-ops-grid bg-ops-surface/90 p-5 shadow-scan sm:p-7">
+<section class="retro-panel rounded-2xl border border-ops-grid bg-ops-surface/90 p-5 shadow-scan sm:p-7">
   <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
       <p class="font-display text-sm uppercase tracking-[0.24em] text-ops-moss">Catalog</p>
-      <h1 class="mt-1 font-display text-3xl text-ops-ink">Gear Explorer</h1>
+      <h1 class="retro-flicker mt-1 font-display text-3xl text-ops-ink">Gear Explorer</h1>
       <p class="mt-2 text-lg text-ops-ink/80">Seed-data mode until backend is wired.</p>
     </div>
     <button
       type="button"
       (click)="clearFilters()"
-      class="rounded-lg border border-ops-grid bg-white/70 px-4 py-2 text-base font-semibold text-ops-ink transition hover:bg-white"
+      class="retro-button rounded-lg border border-ops-grid bg-white/70 px-4 py-2 text-base font-semibold text-ops-ink transition hover:bg-white"
     >
       Reset Filters
     </button>
@@ -16,6 +16,7 @@
 
   <div class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-6">
     <label class="text-base font-semibold text-ops-ink">
+      <span class="material-symbols-outlined inline-field-icon" aria-hidden="true">search</span>
       Search
       <input
         type="text"
@@ -26,6 +27,7 @@
     </label>
 
     <label class="text-base font-semibold text-ops-ink">
+      <span class="material-symbols-outlined inline-field-icon" aria-hidden="true">factory</span>
       Manufacturer
       <select
         [(ngModel)]="selectedManufacturer"
@@ -37,17 +39,7 @@
     </label>
 
     <label class="text-base font-semibold text-ops-ink">
-      Family
-      <select
-        [(ngModel)]="selectedFamily"
-        class="mt-1 w-full rounded-md border border-ops-grid bg-white px-3 py-2 text-base font-medium outline-none ring-ops-laser/40 transition focus:ring"
-      >
-        <option value="all">All families</option>
-        <option *ngFor="let family of families" [value]="family">{{ family }}</option>
-      </select>
-    </label>
-
-    <label class="text-base font-semibold text-ops-ink">
+      <span class="material-symbols-outlined inline-field-icon" aria-hidden="true">deployed_code</span>
       Series
       <select
         [(ngModel)]="selectedSeries"
@@ -59,6 +51,19 @@
     </label>
 
     <label class="text-base font-semibold text-ops-ink">
+      <span class="material-symbols-outlined inline-field-icon" aria-hidden="true">device_hub</span>
+      Line
+      <select
+        [(ngModel)]="selectedFamily"
+        class="mt-1 w-full rounded-md border border-ops-grid bg-white px-3 py-2 text-base font-medium outline-none ring-ops-laser/40 transition focus:ring"
+      >
+        <option value="all">All lines</option>
+        <option *ngFor="let family of families" [value]="family">{{ family }}</option>
+      </select>
+    </label>
+
+    <label class="text-base font-semibold text-ops-ink">
+      <span class="material-symbols-outlined inline-field-icon" aria-hidden="true">category</span>
       Segment
       <select
         [(ngModel)]="selectedMarketSegment"
@@ -69,6 +74,7 @@
     </label>
 
     <label class="text-base font-semibold text-ops-ink">
+      <span class="material-symbols-outlined inline-field-icon" aria-hidden="true">stadia_controller</span>
       Context
       <select
         [(ngModel)]="selectedPlayContext"
@@ -93,7 +99,7 @@
   <div class="grid gap-4 md:grid-cols-2" *ngIf="filteredItems.length > 0">
     <article
       *ngFor="let item of filteredItems"
-      class="rounded-xl border border-ops-grid bg-ops-surface p-5 shadow-scan transition hover:-translate-y-0.5"
+      class="retro-panel rounded-xl border border-ops-grid bg-ops-surface p-5 shadow-scan transition hover:-translate-y-0.5"
     >
       <div class="flex items-start justify-between gap-3">
         <div>
@@ -106,54 +112,76 @@
           >
         </div>
         <div class="flex flex-col items-end gap-1">
-          <span class="rounded-full bg-ops-ink px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-ops-paper">{{ item.marketSegment }}</span>
-          <span class="rounded-full border border-ops-grid bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-ops-ink">{{ item.playContext }}</span>
+          <span class="retro-glow-chip rounded-full bg-ops-ink px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-ops-paper">{{ item.marketSegment }}</span>
+          <span class="retro-glow-chip rounded-full border border-ops-grid bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-ops-ink">{{ item.playContext }}</span>
         </div>
       </div>
 
-      <p class="mt-3 text-lg text-ops-ink/85">{{ item.description }}</p>
+      <a *ngIf="getPreviewImage(item) as previewImage" [routerLink]="['/gear', item.slug]" class="mt-3 block overflow-hidden rounded-lg border border-ops-grid bg-white/70">
+        <img [src]="previewImage" [alt]="item.name + ' preview image'" class="h-40 w-full object-cover" loading="lazy" />
+      </a>
 
       <dl class="mt-4 grid grid-cols-2 gap-2 text-base">
         <div>
-          <dt class="font-bold text-ops-moss">Family</dt>
+          <dt class="font-bold text-ops-moss"><span class="material-symbols-outlined inline-field-icon" aria-hidden="true">deployed_code</span> Series</dt>
+          <dd>
+            <a
+              *ngIf="item.series; else noSeries"
+              [routerLink]="['/catalog']"
+              [queryParams]="{ series: item.series }"
+              class="rounded bg-white/80 px-2 py-0.5 font-semibold text-ops-ember underline decoration-dotted underline-offset-2"
+              >{{ item.series }}</a
+            >
+            <ng-template #noSeries>
+              <span class="text-ops-ink/75">N/A</span>
+            </ng-template>
+          </dd>
+        </div>
+        <div>
+          <dt class="font-bold text-ops-moss"><span class="material-symbols-outlined inline-field-icon" aria-hidden="true">device_hub</span> Line</dt>
           <dd>
             <a
               [routerLink]="['/catalog']"
               [queryParams]="{ family: item.family }"
               class="rounded bg-white/80 px-2 py-0.5 font-semibold text-ops-ember underline decoration-dotted underline-offset-2"
-              >{{ item.family }}</a
+              >{{ getLineLabel(item) }}</a
             >
           </dd>
         </div>
         <div>
-          <dt class="font-bold text-ops-moss">Era</dt>
-          <dd class="text-ops-ink">
-            {{ item.eraStart }}<span *ngIf="item.eraEnd"> - {{ item.eraEnd }}</span><span *ngIf="!item.eraEnd">+</span>
-          </dd>
+          <dt class="font-bold text-ops-moss"><span class="material-symbols-outlined inline-field-icon" aria-hidden="true">history</span> Era</dt>
+          <dd class="text-ops-ink">{{ getEraLabel(item) }}</dd>
+        </div>
+        <div *ngIf="getModelNumber(item)">
+          <dt class="font-bold text-ops-moss"><span class="material-symbols-outlined inline-field-icon" aria-hidden="true">badge</span> Model</dt>
+          <dd class="text-ops-ink">{{ getModelNumber(item) }}</dd>
+        </div>
+        <div>
+          <dt class="font-bold text-ops-moss"><span class="material-symbols-outlined inline-field-icon" aria-hidden="true">schedule</span> Active Years</dt>
+          <dd class="text-ops-ink">{{ getYearRangeLabel(item) }}</dd>
         </div>
       </dl>
 
-      <p class="mt-2 text-base" *ngIf="item.series && item.series !== item.family">
-        <span class="font-bold text-ops-moss">Series:</span>
-        <a
-          [routerLink]="['/catalog']"
-          [queryParams]="{ series: item.series }"
-          class="ml-1 rounded bg-white/80 px-2 py-0.5 font-semibold text-ops-ember underline decoration-dotted underline-offset-2"
-          >{{ item.series }}</a
-        >
-      </p>
-
-      <div class="mt-4 flex flex-wrap gap-2">
+      <div class="mt-3 flex flex-wrap gap-2" *ngIf="item.colors && item.colors.length">
+        <span class="font-bold text-ops-moss">Colors:</span>
         <span
-          *ngFor="let tag of item.tags"
-          class="rounded-md border border-ops-grid bg-white/70 px-2.5 py-1 text-sm font-semibold uppercase tracking-[0.08em] text-ops-ink"
+          *ngFor="let color of item.colors"
+          class="retro-glow-chip rounded-full border border-ops-grid bg-white/80 px-2.5 py-0.5 text-sm font-semibold text-ops-ink"
+          >{{ color }}</span
+        >
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-2" *ngIf="getDisplayTags(item).length > 0">
+        <span
+          *ngFor="let tag of getDisplayTags(item)"
+          class="retro-glow-chip rounded-md border border-ops-grid bg-white/70 px-2.5 py-1 text-sm font-semibold uppercase tracking-[0.08em] text-ops-ink"
           >{{ tag }}</span
         >
       </div>
 
       <a
         [routerLink]="['/gear', item.slug]"
-        class="mt-5 inline-flex rounded-lg bg-ops-ember px-4 py-2 text-base font-bold text-white transition hover:bg-ops-moss"
+        class="retro-button mt-5 inline-flex rounded-lg bg-ops-ember px-4 py-2 text-base font-bold text-white transition hover:bg-ops-moss"
       >
         View Details
       </a>
