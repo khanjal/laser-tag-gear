@@ -22,6 +22,7 @@ export interface GearAsset {
 export interface GearBatteryPack {
   type: string;
   quantity?: number;
+  description?: string;
 }
 
 export interface GearSpecs {

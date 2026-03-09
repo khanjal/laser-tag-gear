@@ -1,0 +1,84 @@
+.retro-card {
+  border-radius: 0.5rem;
+  position: relative;
+
+  // Default variant - retro panel style
+  &--default {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #d1d5db; // ops-grid
+  }
+
+  // Elevated variant - with shadow
+  &--elevated {
+    background-color: rgba(243, 244, 246, 0.9); // ops-surface
+    border: 1px solid #d1d5db;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  // Outlined variant - cleaner border
+  &--outlined {
+    background-color: white;
+    border: 2px solid #d1d5db;
+  }
+
+  // Padding variants
+  &--padding-sm {
+    padding: 0.75rem;
+
+    .retro-card__header {
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  &--padding-md {
+    padding: 1rem;
+
+    .retro-card__header {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &--padding-lg {
+    padding: 1.5rem;
+
+    .retro-card__header {
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  // Header styling
+  &__header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__title-icon {
+    font-size: 1.25rem;
+    color: #16a34a; // ops-moss
+  }
+
+  &__title {
+    font-family: 'Orbitron', sans-serif; // retro display font
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937; // ops-ink
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: 0.875rem;
+    color: rgba(31, 41, 55, 0.7);
+    margin: 0.25rem 0 0 0;
+  }
+
+  // Content area
+  &__content {
+    // Content inherits card padding, no additional styling needed
+  }
+}

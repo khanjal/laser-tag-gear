@@ -2,14 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
-import { GearRepository } from '../../data-access/gear.repository';
-import { GearItem, GearMarketSegment, GearPlayContext } from '../../models/gear.model';
-import { getVariantLabel } from '../../shared/utils/taxonomy.util';
+import { GearRepository } from '@data-access/gear.repository';
+import { GearItem, GearMarketSegment, GearPlayContext } from '@models/gear.model';
+import { getVariantLabel } from '@utils/taxonomy.util';
+import { RetroButtonComponent } from '@components/base/retro-button/retro-button.component';
 
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, RetroButtonComponent],
   templateUrl: './catalog.component.html'
 })
 export class CatalogComponent implements OnInit {

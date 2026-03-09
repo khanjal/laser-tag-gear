@@ -1,0 +1,17 @@
+<div [class]="cardClasses">
+  <!-- Card header (optional) -->
+  <div *ngIf="title || titleIcon || subtitle" class="retro-card__header">
+    <div class="retro-card__title-row">
+      <span *ngIf="titleIcon" class="material-symbols-outlined retro-card__title-icon" aria-hidden="true">
+        {{ titleIcon }}
+      </span>
+      <h3 *ngIf="title" class="retro-card__title">{{ title }}</h3>
+    </div>
+    <p *ngIf="subtitle" class="retro-card__subtitle">{{ subtitle }}</p>
+  </div>
+
+  <!-- Card content -->
+  <div class="retro-card__content">
+    <ng-content></ng-content>
+  </div>
+</div>

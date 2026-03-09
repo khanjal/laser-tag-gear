@@ -94,6 +94,13 @@
         <ng-container [ngSwitch]="spec.label">
           <p class="mt-1 text-base text-ops-ink" *ngSwitchDefault>{{ spec.value }}</p>
 
+          <ul *ngSwitchCase="'Battery'" class="mt-1 space-y-1 text-base text-ops-ink">
+            <li *ngFor="let entry of getBatteryEntries(spec.value)">
+              <span class="font-semibold">{{ entry.text }}</span>
+              <span *ngIf="entry.description" class="ml-2 text-sm italic text-ops-ink/70">({{ entry.description }})</span>
+            </li>
+          </ul>
+
           <ul *ngSwitchCase="'Contents'" class="mt-1 list-disc space-y-1 pl-5 text-base text-ops-ink">
             <li *ngFor="let entry of getContentsEntries(spec.value)">
               <ng-container *ngFor="let part of getLinkedContentsParts(entry)">

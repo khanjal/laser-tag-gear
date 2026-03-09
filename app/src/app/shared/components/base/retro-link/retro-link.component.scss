@@ -1,0 +1,83 @@
+.retro-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  cursor: pointer;
+
+  // Badge variant (default) - for catalog filters
+  &--badge {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #d97706; // ops-ember
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+
+    &:hover {
+      background-color: white;
+      color: #b45309;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #d97706;
+      outline-offset: 2px;
+    }
+  }
+
+  // Inline variant - for text content
+  &--inline {
+    color: #d97706;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 4px;
+
+    &:hover {
+      color: #b45309;
+      text-decoration-style: solid;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #d97706;
+      outline-offset: 2px;
+      border-radius: 0.125rem;
+    }
+  }
+
+  // Button variant - styled like a button
+  &--button {
+    background-color: rgba(243, 244, 246, 0.9);
+    color: #1f2937;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    font-weight: 600;
+
+    &:hover {
+      background-color: white;
+      border-color: #d97706;
+      color: #d97706;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #d97706;
+      outline-offset: 2px;
+    }
+  }
+
+  // Icon styling
+  &__icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__external-icon {
+    font-size: 1rem;
+    opacity: 0.6;
+    margin-left: 0.125rem;
+  }
+}

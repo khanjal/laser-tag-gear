@@ -5,13 +5,13 @@
       <h1 class="retro-flicker mt-1 font-display text-3xl text-ops-ink">Gear Explorer</h1>
       <p class="mt-2 text-lg text-ops-ink/80">Seed-data mode until backend is wired.</p>
     </div>
-    <button
-      type="button"
-      (click)="clearFilters()"
-      class="retro-button rounded-lg border border-ops-grid bg-white/70 px-4 py-2 text-base font-semibold text-ops-ink transition hover:bg-white"
-    >
+    <app-retro-button
+      variant="outlined"
+      icon="filter_alt_off"
+      size="md"
+      (clicked)="clearFilters()">
       Reset Filters
-    </button>
+    </app-retro-button>
   </div>
 
   <div class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-6">

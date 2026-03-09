@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { GearRepository } from '../../data-access/gear.repository';
-import { GearItem } from '../../models/gear.model';
-import { getVariantLabel } from '../../shared/utils/taxonomy.util';
+import { GearRepository } from '@data-access/gear.repository';
+import { GearItem } from '@models/gear.model';
+import { getVariantLabel } from '@utils/taxonomy.util';
 
 @Component({
   selector: 'app-gear-detail',
@@ -354,6 +354,30 @@ export class GearDetailComponent implements OnInit {
 
   getSetEntries(setNames: string): string[] {
     return this.getContentsEntries(setNames);
+  }
+
+  getBatteryEntries(battery: string): Array<{ text: string; description?: string }> {
+    if (!battery) {
+      return [];
+    }
+
+    // If we have batteryPacks with structured data, use those
+    const specData = this.gear?.specs;
+    if (specData?.batteryPacks?.length) {
+      return specData.batteryPacks.map(pack => {
+        const text = pack.quantity ? `${pack.type} [${pack.quantity}]` : pack.type;
+        return {
+          text,
+          description: pack.description
+        };
+      });
+    }
+
+    // Otherwise, parse the string (legacy format)
+    return battery.split(/,\s*|\s+and\s+/i)
+      .map(b => b.trim())
+      .filter(b => b.length > 0)
+      .map(b => ({ text: b }));
   }
 
   getSpecIcon(label: string): string {

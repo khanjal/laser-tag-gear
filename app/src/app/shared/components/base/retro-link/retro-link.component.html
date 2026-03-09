@@ -1,0 +1,25 @@
+<!-- Router link -->
+<a
+  *ngIf="routerLink && !href"
+  [routerLink]="routerLink"
+  [queryParams]="queryParams"
+  [class]="linkClasses">
+  <span *ngIf="icon" class="material-symbols-outlined retro-link__icon" aria-hidden="true">
+    {{ icon }}
+  </span>
+  <ng-content></ng-content>
+</a>
+
+<!-- External/regular link -->
+<a
+  *ngIf="href && !routerLink"
+  [href]="href"
+  [target]="external ? '_blank' : '_self'"
+  [rel]="external ? 'noreferrer' : undefined"
+  [class]="linkClasses">
+  <span *ngIf="icon" class="material-symbols-outlined retro-link__icon" aria-hidden="true">
+    {{ icon }}
+  </span>
+  <ng-content></ng-content>
+  <span *ngIf="external" class="material-symbols-outlined retro-link__external-icon" aria-label="(opens in new tab)">open_in_new</span>
+</a>
