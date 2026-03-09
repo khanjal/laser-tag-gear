@@ -115,6 +115,8 @@
         "assetLinks":  [
                            "../images/t.gif",
                            "files/laserchallenge_extreme_radar.pdf",
+                           "gear_laserchallenge_original.html#backvest",
+                           "gear_laserchallenge_v2.html#v2vest",
                            "images/image.gif",
                            "images/manual.gif"
                        ]
@@ -1186,7 +1188,11 @@
         "contentsRaw":  null,
         "originalPriceRaw":  null,
         "notesRaw":  "This vest takes hits about the same speed as a V2 Vest , but doesn\u0027t allow a sensor to added. You can hardwire a Laser Challenge Back Vest to it if you have the knowledge.",
-        "assetLinks":  "../images/t.gif"
+        "assetLinks":  [
+                           "../images/t.gif",
+                           "gear_laserchallenge_original.html#backvest",
+                           "gear_laserchallenge_v2.html#v2vest"
+                       ]
     },
     {
         "sourceFile":  "gear_lasercommand.html",

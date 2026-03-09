@@ -1,7 +1,14 @@
 <section *ngIf="gear; else missing" class="rounded-2xl border border-ops-grid bg-ops-surface/90 p-6 shadow-scan sm:p-8">
   <p class="text-sm font-bold uppercase tracking-[0.2em] text-ops-moss">Gear Detail</p>
   <h1 class="mt-1 font-display text-3xl text-ops-ink sm:text-4xl">{{ gear.name }}</h1>
-  <p class="mt-2 text-lg font-semibold uppercase tracking-[0.14em] text-ops-moss">{{ gear.manufacturer }}</p>
+  <p class="mt-2 text-lg font-semibold uppercase tracking-[0.14em] text-ops-moss">
+    <a
+      [routerLink]="['/catalog']"
+      [queryParams]="{ manufacturer: gear.manufacturer }"
+      class="rounded bg-white/70 px-2 py-1 text-ops-ember underline decoration-dotted underline-offset-2 hover:bg-white"
+      >{{ gear.manufacturer }}</a
+    >
+  </p>
 
   <p class="mt-5 max-w-3xl text-xl leading-relaxed text-ops-ink/85">
     <ng-container *ngFor="let part of linkedDescriptionParts">
@@ -20,7 +27,24 @@
   <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <article class="rounded-lg border border-ops-grid bg-white/70 p-4">
       <h2 class="font-display text-lg text-ops-ink">Classification</h2>
-      <p class="mt-2 text-base"><strong>Family:</strong> {{ gear.family }}</p>
+      <p class="mt-2 text-base">
+        <strong>Family:</strong>
+        <a
+          [routerLink]="['/catalog']"
+          [queryParams]="{ family: gear.family }"
+          class="rounded bg-white px-2 py-0.5 font-semibold text-ops-ember underline decoration-dotted underline-offset-2 hover:bg-ops-surface"
+          >{{ gear.family }}</a
+        >
+      </p>
+      <p class="text-base" *ngIf="series && series !== gear.family">
+        <strong>Series:</strong>
+        <a
+          [routerLink]="['/catalog']"
+          [queryParams]="{ series: series }"
+          class="rounded bg-white px-2 py-0.5 font-semibold text-ops-ember underline decoration-dotted underline-offset-2 hover:bg-ops-surface"
+          >{{ series }}</a
+        >
+      </p>
       <p class="text-base"><strong>Segment:</strong> {{ gear.marketSegment | titlecase }}</p>
       <p class="text-base"><strong>Context:</strong> {{ gear.playContext | titlecase }}</p>
       <p class="text-base">
@@ -38,10 +62,12 @@
     <article class="rounded-lg border border-ops-grid bg-white/70 p-4 sm:col-span-2 lg:col-span-1">
       <h2 class="font-display text-lg text-ops-ink">Tags</h2>
       <div class="mt-2 flex flex-wrap gap-2">
-        <span
+        <a
           *ngFor="let tag of gear.tags"
+          [routerLink]="['/catalog']"
+          [queryParams]="{ q: tag }"
           class="rounded-md border border-ops-grid bg-white px-2.5 py-1 text-sm font-semibold uppercase tracking-[0.08em] text-ops-ink"
-          >{{ tag }}</span
+          >{{ tag }}</a
         >
       </div>
     </article>
@@ -57,25 +83,10 @@
     </div>
   </section>
 
-  <section class="mt-6" *ngIf="gear.manuals.length > 0">
-    <h2 class="font-display text-xl text-ops-ink">Manuals & References</h2>
-    <ul class="mt-3 space-y-2">
-      <li *ngFor="let manual of gear.manuals">
-        <a
-          [href]="manual.url"
-          target="_blank"
-          rel="noreferrer"
-          class="inline-flex rounded-lg border border-ops-grid bg-white/80 px-3 py-2 text-base font-semibold text-ops-ink transition hover:bg-white"
-          >{{ manual.title }}</a
-        >
-      </li>
-    </ul>
-  </section>
-
-  <section class="mt-6" *ngIf="legacyFiles.length > 0">
-    <h2 class="font-display text-xl text-ops-ink">Legacy Files (Local)</h2>
+  <section class="mt-6" *ngIf="files.length > 0">
+    <h2 class="font-display text-xl text-ops-ink">Files</h2>
     <ul class="mt-3 flex flex-wrap gap-2">
-      <li *ngFor="let file of legacyFiles">
+      <li *ngFor="let file of files">
         <a
           [href]="file.url"
           target="_blank"
@@ -87,17 +98,17 @@
     </ul>
   </section>
 
-  <section class="mt-6" *ngIf="legacyImages.length > 0">
-    <h2 class="font-display text-xl text-ops-ink">Legacy Images (Local)</h2>
+  <section class="mt-6" *ngIf="images.length > 0">
+    <h2 class="font-display text-xl text-ops-ink">Images</h2>
     <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       <a
-        *ngFor="let image of legacyImages"
+        *ngFor="let image of images"
         [href]="image"
         target="_blank"
         rel="noreferrer"
         class="overflow-hidden rounded-lg border border-ops-grid bg-white/80"
       >
-        <img [src]="image" alt="Legacy gear image" class="h-44 w-full object-cover" loading="lazy" />
+        <img [src]="image" alt="Gear image" class="h-44 w-full object-cover" loading="lazy" />
       </a>
     </div>
   </section>

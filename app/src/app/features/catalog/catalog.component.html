@@ -14,7 +14,7 @@
     </button>
   </div>
 
-  <div class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+  <div class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-6">
     <label class="text-base font-semibold text-ops-ink">
       Search
       <input
@@ -44,6 +44,17 @@
       >
         <option value="all">All families</option>
         <option *ngFor="let family of families" [value]="family">{{ family }}</option>
+      </select>
+    </label>
+
+    <label class="text-base font-semibold text-ops-ink">
+      Series
+      <select
+        [(ngModel)]="selectedSeries"
+        class="mt-1 w-full rounded-md border border-ops-grid bg-white px-3 py-2 text-base font-medium outline-none ring-ops-laser/40 transition focus:ring"
+      >
+        <option value="all">All series</option>
+        <option *ngFor="let series of seriesOptions" [value]="series">{{ series }}</option>
       </select>
     </label>
 
@@ -87,7 +98,12 @@
       <div class="flex items-start justify-between gap-3">
         <div>
           <h2 class="font-display text-2xl text-ops-ink">{{ item.name }}</h2>
-          <p class="text-base font-semibold uppercase tracking-[0.12em] text-ops-moss">{{ item.manufacturer }}</p>
+          <a
+            [routerLink]="['/catalog']"
+            [queryParams]="{ manufacturer: item.manufacturer }"
+            class="inline-block rounded bg-white/80 px-2 py-0.5 text-base font-semibold uppercase tracking-[0.12em] text-ops-moss underline decoration-dotted underline-offset-2"
+            >{{ item.manufacturer }}</a
+          >
         </div>
         <div class="flex flex-col items-end gap-1">
           <span class="rounded-full bg-ops-ink px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-ops-paper">{{ item.marketSegment }}</span>
@@ -100,7 +116,14 @@
       <dl class="mt-4 grid grid-cols-2 gap-2 text-base">
         <div>
           <dt class="font-bold text-ops-moss">Family</dt>
-          <dd class="text-ops-ink">{{ item.family }}</dd>
+          <dd>
+            <a
+              [routerLink]="['/catalog']"
+              [queryParams]="{ family: item.family }"
+              class="rounded bg-white/80 px-2 py-0.5 font-semibold text-ops-ember underline decoration-dotted underline-offset-2"
+              >{{ item.family }}</a
+            >
+          </dd>
         </div>
         <div>
           <dt class="font-bold text-ops-moss">Era</dt>
@@ -109,6 +132,16 @@
           </dd>
         </div>
       </dl>
+
+      <p class="mt-2 text-base" *ngIf="item.series && item.series !== item.family">
+        <span class="font-bold text-ops-moss">Series:</span>
+        <a
+          [routerLink]="['/catalog']"
+          [queryParams]="{ series: item.series }"
+          class="ml-1 rounded bg-white/80 px-2 py-0.5 font-semibold text-ops-ember underline decoration-dotted underline-offset-2"
+          >{{ item.series }}</a
+        >
+      </p>
 
       <div class="mt-4 flex flex-wrap gap-2">
         <span

@@ -58,6 +58,68 @@ function Extract-Spec {
   return $Raw.Trim()
 }
 
+function Parse-BatteryPacks {
+  param([string]$Raw)
+
+  if ([string]::IsNullOrWhiteSpace($Raw)) {
+    return @()
+  }
+
+  $normalized = ($Raw -replace '(?i)volt(s)?', 'V') -replace '(?i)and', ','
+  $segments = @($normalized -split '[,;/]' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+  $packs = @()
+
+  foreach ($segment in $segments) {
+    $upper = $segment.ToUpperInvariant()
+    $type = $null
+
+    if ($upper -match 'AAA') { $type = 'AAA' }
+    elseif ($upper -match '\bAA\b') { $type = 'AA' }
+    elseif ($upper -match '\bC\b') { $type = 'C' }
+    elseif ($upper -match '\bD\b') { $type = 'D' }
+    elseif ($upper -match '9\s*-?\s*V') { $type = '9V' }
+    elseif ($upper -match 'RECHARGE') { $type = 'rechargeable' }
+
+    if (-not $type) {
+      continue
+    }
+
+    $quantity = $null
+    $match = [regex]::Match($segment, '\d+')
+    if ($match.Success) {
+      $quantity = [int]$match.Value
+    }
+
+    $packs += [pscustomobject]@{
+      type = $type
+      quantity = $quantity
+    }
+  }
+
+  return @($packs)
+}
+
+function Get-AssetKind {
+  param([string]$Path)
+
+  $ext = [System.IO.Path]::GetExtension($Path).ToLowerInvariant()
+  switch ($ext) {
+    '.pdf' { return 'manual' }
+    '.wav' { return 'audio' }
+    '.mp3' { return 'audio' }
+    '.ogg' { return 'audio' }
+    '.jpg' { return 'image' }
+    '.jpeg' { return 'image' }
+    '.png' { return 'image' }
+    '.gif' { return 'image' }
+    '.zip' { return 'archive' }
+    '.doc' { return 'document' }
+    '.docx' { return 'document' }
+    '.txt' { return 'document' }
+    default { return 'other' }
+  }
+}
+
 function Get-FieldValue {
   param(
     [string]$Block,
@@ -73,14 +135,14 @@ function Get-FieldValue {
 }
 
 $sourceMap = @{
-  'gear_laserchallenge_original' = @{ family = 'Laser Challenge Original'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_laserchallenge_pro' = @{ family = 'Laser Challenge Pro'; manufacturer = 'ToyMax'; marketSegment = 'commercial'; playContext = 'hybrid' }
-  'gear_laserchallenge_v2' = @{ family = 'Laser Challenge V2'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_laserchallenge_extreme' = @{ family = 'Laser Challenge Extreme'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_lasercommand' = @{ family = 'Laser Command / Laser Attack'; manufacturer = 'Astronomical Toys'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_quickshot' = @{ family = 'Quick Shot'; manufacturer = 'Radio Shack'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_segalockon' = @{ family = 'SEGA Lock-On'; manufacturer = 'SEGA'; marketSegment = 'retail'; playContext = 'home' }
-  'gear_voicecommandlockon' = @{ family = 'Voice Command Lock-On'; manufacturer = 'Playmates Toys'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_original' = @{ series = 'Laser Challenge'; family = 'Laser Challenge Original'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_pro' = @{ series = 'Laser Challenge'; family = 'Laser Challenge Pro'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_v2' = @{ series = 'Laser Challenge'; family = 'Laser Challenge V2'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_laserchallenge_extreme' = @{ series = 'Laser Challenge'; family = 'Laser Challenge Extreme'; manufacturer = 'ToyMax'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_lasercommand' = @{ series = 'Laser Command'; family = 'Laser Command / Laser Attack'; manufacturer = 'Astronomical Toys'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_quickshot' = @{ series = 'Quick Shot'; family = 'Quick Shot'; manufacturer = 'Radio Shack'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_segalockon' = @{ series = 'Lock-On'; family = 'SEGA Lock-On'; manufacturer = 'SEGA'; marketSegment = 'retail'; playContext = 'home' }
+  'gear_voicecommandlockon' = @{ series = 'Lock-On'; family = 'Voice Command Lock-On'; manufacturer = 'Playmates Toys'; marketSegment = 'retail'; playContext = 'home' }
 }
 
 # 1) Mirror legacy site content to app/public/legacy/site.
@@ -172,9 +234,8 @@ foreach ($file in $htmlFiles) {
     foreach ($mm in $manualMatches) {
       $u = $mm.Groups['u'].Value.Trim()
       if ($u -match '^(javascript:|mailto:|https?://|#)') { continue }
-      if ($u -match '\.(pdf|zip|wav|mp3|ogg|gif|jpg|jpeg|png)$') {
-        $assetLinks += $u
-      }
+      if ($u -match '(?i)\.(html?)$') { continue }
+      $assetLinks += $u
     }
 
     $gearRecords += [pscustomobject]@{
@@ -227,66 +288,130 @@ foreach ($r in $gearRecords) {
   $slug = Slugify("$($r.title)-$($r.anchor)")
   $year = Parse-Year $r.releasedRaw
 
-  $tags = @('legacy-import', $r.kind, (Slugify $base))
-  if ($r.originalPriceRaw -and $r.originalPriceRaw -ne '$?') { $tags += 'priced' }
-  if ($r.modelNumberRaw) { $tags += 'model-number' }
-
-  $manuals = @()
+  $assets = @()
   foreach ($assetLink in $r.assetLinks) {
-    $clean = $assetLink.TrimStart('./')
-    $path = "/legacy/site/$clean"
-    $ext = [System.IO.Path]::GetExtension($clean).ToLowerInvariant()
-    if ($ext -in @('.pdf', '.zip', '.wav', '.mp3', '.ogg')) {
-      $manuals += [pscustomobject]@{
-        title = [System.IO.Path]::GetFileName($clean)
-        url = $path
-      }
+    $clean = $assetLink.Trim()
+    if ([string]::IsNullOrWhiteSpace($clean)) { continue }
+
+    $normalized = $clean.Replace('\\', '/').TrimStart('.')
+    $normalized = $normalized.TrimStart('/')
+
+    if ($normalized -match '^(?i)images/(t|image|manual|sound|winzip|curve|curve2)\.gif$') {
+      continue
+    }
+    if ($normalized -match '^(?i)images/icon_khanjal_lasertag\.ico$') {
+      continue
+    }
+
+    $kind = Get-AssetKind $normalized
+    $assets += [pscustomobject]@{
+      name = [System.IO.Path]::GetFileName($normalized)
+      url = "/legacy/site/$normalized"
+      kind = $kind
+      sourcePath = $clean
     }
   }
 
+  $assets = @($assets | Sort-Object kind, name -Unique)
+  $manuals = @($assets | Where-Object { $_.kind -eq 'manual' } | ForEach-Object {
+      [pscustomobject]@{
+        title = $_.name
+        url = $_.url
+      }
+    })
+
   $desc = if ($r.notesRaw) { $r.notesRaw } else { "Legacy imported entry for $($r.title)." }
+
+  $releasedValue = Extract-Spec $r.releasedRaw
+  $modelValue = Extract-Spec $r.modelNumberRaw
+  $batteryValue = Extract-Spec $r.batteryRequirementRaw
+  $batteryPacks = Parse-BatteryPacks $batteryValue
+  $rangeValue = Extract-Spec $r.rangeRaw
+  $ammoValue = Extract-Spec $r.ammoRaw
+  $portValue = Extract-Spec $r.accessoryPortsRaw
+  $setNamesValue = Extract-Spec $r.setNamesRaw
+  $contentsValue = Extract-Spec $r.contentsRaw
+  $priceValue = Extract-Spec $r.originalPriceRaw
+  $notesValue = Extract-Spec $r.notesRaw
+
+  # Human-friendly, user-clickable tags.
+  $tagSet = New-Object 'System.Collections.Generic.HashSet[string]'
+  foreach ($batteryPack in $batteryPacks) {
+    if (-not $batteryPack.type) { continue }
+    $label = "Battery: $($batteryPack.type)"
+    if ($batteryPack.quantity) {
+      $label = "$label [$($batteryPack.quantity)]"
+    }
+    $null = $tagSet.Add($label)
+  }
+
+  if ($modelValue) { $null = $tagSet.Add('Model Number') }
+  if ($rangeValue) { $null = $tagSet.Add('Range Listed') }
+  if ($ammoValue) { $null = $tagSet.Add('Ammo Listed') }
+  if ($priceValue) { $null = $tagSet.Add('Price Listed') }
+  if ($portValue) { $null = $tagSet.Add('Accessory Port') }
+  if ($setNamesValue) { $null = $tagSet.Add('Set Name Listed') }
+
+  $assetKinds = @($assets | ForEach-Object { $_.kind } | Sort-Object -Unique)
+  foreach ($assetKind in $assetKinds) {
+    switch ($assetKind) {
+      'manual' { $null = $tagSet.Add('Manual Available') }
+      'audio' { $null = $tagSet.Add('Sound File') }
+      'image' { $null = $tagSet.Add('Image Available') }
+      'archive' { $null = $tagSet.Add('Archive File') }
+      'document' { $null = $tagSet.Add('Document File') }
+      default { $null = $tagSet.Add('Related File') }
+    }
+  }
+
+  if ($r.kind -eq 'set') {
+    $null = $tagSet.Add('Set')
+  }
 
   $seedItem = [pscustomobject]@{
     id = $id
     slug = $slug
     name = $r.title
+    series = $map.series
     family = $map.family
     manufacturer = $map.manufacturer
     marketSegment = $map.marketSegment
     playContext = $map.playContext
     eraStart = if ($year -gt 0) { $year } else { 0 }
     compatibility = @($map.family)
-    tags = $tags | Sort-Object -Unique
+    tags = @($tagSet | Sort-Object)
     description = $desc
     manuals = $manuals
-    modelNumber = Extract-Spec $r.modelNumberRaw
-    batteryRequirements = Extract-Spec $r.batteryRequirementRaw
-    range = Extract-Spec $r.rangeRaw
-    ammo = Extract-Spec $r.ammoRaw
-    accessoryPorts = Extract-Spec $r.accessoryPortsRaw
-    contents = Extract-Spec $r.contentsRaw
-    originalPrice = Extract-Spec $r.originalPriceRaw
+    specs = [pscustomobject]@{
+      released = $releasedValue
+      modelNumber = $modelValue
+      batteryRequirements = $batteryValue
+      batteryPacks = @($batteryPacks)
+      range = $rangeValue
+      ammo = $ammoValue
+      accessoryPorts = $portValue
+      setNames = $setNamesValue
+      contents = $contentsValue
+      originalPrice = $priceValue
+      notes = $notesValue
+      kind = $r.kind
+    }
+    assets = $assets
     source = [pscustomobject]@{
       sourceFile = $r.sourceFile
       sourceAnchor = $r.anchor
       sourceUrl = $r.sourceUrl
     }
-    legacy = [pscustomobject]@{
-      releasedRaw = $r.releasedRaw
-      modelNumberRaw = $r.modelNumberRaw
-      batteryRequirementRaw = $r.batteryRequirementRaw
-      rangeRaw = $r.rangeRaw
-      ammoRaw = $r.ammoRaw
-      accessoryPortsRaw = $r.accessoryPortsRaw
-      setNamesRaw = $r.setNamesRaw
-      contentsRaw = $r.contentsRaw
-      originalPriceRaw = $r.originalPriceRaw
-      notesRaw = $r.notesRaw
-      assetLinks = $r.assetLinks
-    }
   }
 
-  # Remove null spec fields to keep JSON clean
+  # Remove null and empty-array spec fields for cleaner payloads.
+  if ($seedItem.specs) {
+    $seedItem.specs.PSObject.Properties | Where-Object {
+      $_.Value -eq $null -or ($_.Value -is [array] -and $_.Value.Count -eq 0)
+    } | ForEach-Object { $seedItem.specs.PSObject.Properties.Remove($_.Name) }
+  }
+
+  # Remove null top-level fields to keep JSON clean
   $seedItem.PSObject.Properties | Where-Object Value -eq $null | ForEach-Object { $seedItem.PSObject.Properties.Remove($_.Name) }
 
   $seed += $seedItem

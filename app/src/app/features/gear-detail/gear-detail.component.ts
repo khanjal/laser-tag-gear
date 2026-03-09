@@ -14,18 +14,6 @@ export class GearDetailComponent {
   readonly gear?: GearItem;
   readonly related: GearItem[];
 
-  private readonly ignoredAssetLinks = new Set([
-    '../images/t.gif',
-    '../images/curve.gif',
-    '../images/curve2.gif',
-    '../images/icon_khanjal_lasertag.ico',
-    'images/t.gif',
-    'images/image.gif',
-    'images/manual.gif',
-    'images/sound.gif',
-    'images/winzip.gif'
-  ]);
-
   constructor(route: ActivatedRoute, repository: GearRepository) {
     const slug = route.snapshot.paramMap.get('slug');
     this.gear = slug ? repository.getBySlug(slug) : undefined;
@@ -42,21 +30,49 @@ export class GearDetailComponent {
       .slice(0, 4);
   }
 
+  get series(): string | undefined {
+    const explicitSeries = this.gear?.series?.trim();
+    if (explicitSeries) {
+      return explicitSeries;
+    }
+
+    // Backward-compatible fallback for any old records without explicit series.
+    const family = this.gear?.family;
+    if (!family) {
+      return undefined;
+    }
+
+    if (/^laser challenge\b/i.test(family)) {
+      return 'Laser Challenge';
+    }
+    if (family.includes('/')) {
+      return family.split('/')[0]?.trim();
+    }
+
+    return undefined;
+  }
+
   get specs(): Array<{ label: string; value: string }> {
     if (!this.gear) {
       return [];
     }
 
+    const specData = this.gear.specs;
+    const batterySummary = specData?.batteryPacks?.length
+      ? specData.batteryPacks
+          .map((p) => (p.quantity ? `${p.type} [${p.quantity}]` : p.type))
+          .join(', ')
+      : specData?.batteryRequirements;
     const specs: Array<{ label: string; value: string | undefined }> = [
-      { label: 'Released', value: this.gear.eraStart?.toString() },
-      { label: 'Model Number', value: this.gear.modelNumber },
-      { label: 'Battery Requirements', value: this.gear.batteryRequirements },
-      { label: 'Power Source', value: this.gear.powerSource },
-      { label: 'Range', value: this.gear.range },
-      { label: 'Ammo', value: this.gear.ammo },
-      { label: 'Accessory Ports', value: this.gear.accessoryPorts },
-      { label: 'Contents', value: this.gear.contents },
-      { label: 'Original Price', value: this.gear.originalPrice }
+      { label: 'Released', value: specData?.released ?? this.gear.eraStart?.toString() },
+      { label: 'Model Number', value: specData?.modelNumber },
+      { label: 'Battery', value: batterySummary },
+      { label: 'Range', value: specData?.range },
+      { label: 'Ammo', value: specData?.ammo },
+      { label: 'Accessory Ports', value: specData?.accessoryPorts },
+      { label: 'Set(s)', value: specData?.setNames },
+      { label: 'Contents', value: specData?.contents },
+      { label: 'Original Price', value: specData?.originalPrice }
     ];
 
     return specs
@@ -64,13 +80,14 @@ export class GearDetailComponent {
       .map((s) => ({ label: s.label, value: s.value as string }));
   }
 
-  get legacyImages(): string[] {
-    return this.toAssetUrls(['.jpg', '.jpeg', '.png', '.gif']).filter((url) => !url.endsWith('/images/image.gif'));
+  get images(): string[] {
+    return (this.gear?.assets ?? []).filter((a) => a.kind === 'image').map((a) => a.url);
   }
 
-  get legacyFiles(): Array<{ name: string; url: string }> {
-    const urls = this.toAssetUrls(['.pdf', '.zip', '.wav', '.mp3', '.ogg', '.txt', '.doc']);
-    return urls.map((url) => ({ name: this.fileNameFromUrl(url), url }));
+  get files(): Array<{ name: string; url: string }> {
+    return (this.gear?.assets ?? [])
+      .filter((a) => a.kind !== 'image')
+      .map((a) => ({ name: a.name, url: a.url }));
   }
 
   get linkedDescriptionParts(): Array<{ text: string; href?: string }> {
@@ -79,7 +96,7 @@ export class GearDetailComponent {
       return [];
     }
 
-    const files = this.legacyFiles;
+    const files = this.files;
     if (files.length === 0) {
       return [{ text }];
     }
@@ -112,35 +129,5 @@ export class GearDetailComponent {
     }
 
     return parts;
-  }
-
-  private toAssetUrls(extensions: string[]): string[] {
-    const links = this.gear?.legacy?.assetLinks ?? [];
-    const result: string[] = [];
-
-    for (const rawLink of links) {
-      const link = rawLink.trim();
-      if (!link || this.ignoredAssetLinks.has(link)) {
-        continue;
-      }
-
-      const lower = link.toLowerCase();
-      if (!extensions.some((ext) => lower.endsWith(ext))) {
-        continue;
-      }
-
-      const normalized = link.replace(/^\.\//, '').replace(/^\.\.\//, '');
-      const url = `/legacy/site/${normalized}`;
-      if (!result.includes(url)) {
-        result.push(url);
-      }
-    }
-
-    return result;
-  }
-
-  private fileNameFromUrl(url: string): string {
-    const parts = url.split('/');
-    return parts[parts.length - 1] ?? url;
   }
 }

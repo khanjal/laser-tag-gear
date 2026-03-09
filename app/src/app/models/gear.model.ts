@@ -12,24 +12,38 @@ export interface GearSource {
   sourceUrl?: string;
 }
 
-export interface GearLegacyData {
-  releasedRaw?: string | null;
-  modelNumberRaw?: string | null;
-  batteryRequirementRaw?: string | null;
-  rangeRaw?: string | null;
-  ammoRaw?: string | null;
-  accessoryPortsRaw?: string | null;
-  setNamesRaw?: string | null;
-  contentsRaw?: string | null;
-  originalPriceRaw?: string | null;
-  notesRaw?: string | null;
-  assetLinks?: string[];
+export interface GearAsset {
+  name: string;
+  url: string;
+  kind: 'manual' | 'audio' | 'image' | 'archive' | 'document' | 'other';
+  sourcePath?: string;
+}
+
+export interface GearBatteryPack {
+  type: string;
+  quantity?: number;
+}
+
+export interface GearSpecs {
+  released?: string;
+  modelNumber?: string;
+  batteryRequirements?: string;
+  batteryPacks?: GearBatteryPack[];
+  range?: string;
+  ammo?: string;
+  accessoryPorts?: string;
+  setNames?: string;
+  contents?: string;
+  originalPrice?: string;
+  notes?: string;
+  kind?: 'gear' | 'set';
 }
 
 export interface GearItem {
   id: string;
   slug: string;
   name: string;
+  series?: string;
   family: string;
   manufacturer: string;
   marketSegment: GearMarketSegment;
@@ -40,17 +54,8 @@ export interface GearItem {
   tags: string[];
   description: string;
   manuals: GearManual[];
-  
-  // Product specifications
-  modelNumber?: string;
-  batteryRequirements?: string;
-  powerSource?: string;
-  range?: string;
-  ammo?: string;
-  accessoryPorts?: string;
-  contents?: string;
-  originalPrice?: string;
-  
+  specs?: GearSpecs;
+  assets?: GearAsset[];
+
   source?: GearSource;
-  legacy?: GearLegacyData;
 }
